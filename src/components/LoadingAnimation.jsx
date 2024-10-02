@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import gameBoy from "../assets/gameboy.png";
 import gameBoy0 from "../assets/gameboy0.png";
-import StartDisplay from "../components/StartDisplay";
+import StartDisplay from "./StartDisplay";
 import gameBoy2 from "../assets/gameboy2.png";
 import styled, { keyframes } from 'styled-components';
-import { Title, SubTitle, Content, Content2, ColorText, Presskey } from '../components/Texts';
+import { Title, SubTitle, Content, Content2, ColorText, Presskey } from './Texts';
 import { useNavigate } from "react-router-dom";
 
 export const Wrap = styled.div`

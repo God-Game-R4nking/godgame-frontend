@@ -7,7 +7,7 @@ import Input from './Input';
 import BirthDaySelect from './BirthDaySelect';
 import { valifySignIn, valifySignUp, valifyChangePassword } from '../utils/Validation';
 import { useNavigate } from 'react-router-dom';
-import {Title, ColorText, SubTitle, Content, Content2, Presskey} from '../components/Texts';
+import {Title, ColorText, SubTitle, Content, Content2, Presskey} from './Texts';
 
 export const ModeStyle = styled.div`
     display: flex;

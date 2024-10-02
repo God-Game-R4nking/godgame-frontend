@@ -31,6 +31,12 @@ export const Content2 = styled.p`
     margin: 0;
 `;
 
+export const Content3 = styled.p`
+    font-size: 15px;
+    text-align: start;
+    margin: 0;
+`;
+
 export const ValidationText = styled.p`
     font-size: 15px;
     text-align: start;
