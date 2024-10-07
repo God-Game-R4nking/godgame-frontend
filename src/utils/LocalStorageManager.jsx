@@ -1,11 +1,11 @@
-import React from "react";
-
-const LocalStorageManager = (acessToken) => {
-    localStorage.setItem('acessToken', JSON.stringify(acessToken))
-
-    useEffect(() => {
-        localStorage.setItem('my-data', JSON.stringify(data))
-    })
+export const setLocalStorage = (name, data) => {
+    localStorage.setItem(name, JSON.stringify(data))
 }
 
-export default LocalStorageManager;
+export const getLocalStorage = (name) => {
+    return localStorage.getItem(name);
+}
+
+export const removeLocalStorage = (name) => {
+    localStorage.removeItem(name);
+}
