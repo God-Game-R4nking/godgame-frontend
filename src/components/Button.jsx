@@ -27,7 +27,7 @@ const ButtonStylePass = styled.button`
     border: 1px solid black;
     background-color: rgb(236, 99, 99);
     font-family: Pixel;
-    font-size: 18px;
+    font-size: 22px;
 
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
 

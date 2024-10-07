@@ -12,7 +12,7 @@ const InputStyle = styled.input`
 `;
 
 const Input = forwardRef((props, ref) => {
-    const { width, height, type, onKeyDown, textAlign, placeholder } = props;
+    const { width, height, type, onKeyDown, min, max, maxLength, onChange, textAlign, placeholder, oninput, value} = props;
 
     return (
         <InputStyle
@@ -21,7 +21,13 @@ const Input = forwardRef((props, ref) => {
             width={width}
             height={height}
             textAlign={textAlign}
+            maxLength={maxLength}
             placeholder={placeholder}
+            value={value}
+            min={min}
+            max={max}
+            onChange={onChange}
+            oninput={oninput}
             onKeyDown={onKeyDown} />
     );
 });
