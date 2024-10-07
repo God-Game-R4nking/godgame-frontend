@@ -8,10 +8,14 @@ const sendSignUpRequest = async (requestBody) => {
                 'Content-Type': 'application/json',
             },
         });
-        return response.data;  // 성공 시 서버에서 받은 데이터를 반환
-    } catch (error) {
-        console.error("회원가입 요청 중 오류 발생:", error);
-        throw error;  // 에러가 발생하면 호출한 쪽에서 처리할 수 있게 에러를 다시 던짐
+        if(response.status === 200 || response.status === 201){
+            console.log("성공");
+        }
+    }catch(error) {
+        console.error("실패", error);
+        if(error.response.status === 409){
+            alert("이미 있는 회원입니다");
+        }
     }
 };
 
