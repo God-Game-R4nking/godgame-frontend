@@ -5,9 +5,10 @@ import StartDisplay from './StartDisplay';
 import Button from './Button';
 import Input from './Input';
 import BirthDaySelect from './BirthDaySelect';
+import ic_pass from '../assets/ic_pass.webp';
 import { valifySignIn, valifySignUp, valifyChangePassword } from '../utils/Validation';
 import { useNavigate } from 'react-router-dom';
-import {Title, ColorText, SubTitle, Content, Content2, Presskey} from './Texts';
+import { Title, ColorText, SubTitle, Content, Content2, Content3, Presskey } from './Texts';
 
 export const ModeStyle = styled.div`
     display: flex;
@@ -72,10 +73,15 @@ const SelectMode = ({ mode }) => {
 const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     const signInRefs = [useRef(null), useRef(null)];
     const signUpRefs = [useRef(null), useRef(null), useRef(null), useRef(null)];
+    const passRef = [useRef(null), useRef(null), useRef(null)];
     const findPasswordRefs = [useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null), useRef(null)];
     const changePasswordRefs = [useRef(null), useRef(null)];
     const passButton = useRef(null);
     const navigate = useNavigate();
+    const [lastJuminNum, setLastJuminNum] = useState('');
+    const [firstJuminNum, setFirstJuminNum] = useState('');
+    const [middlePhoneNum, setMiddlePhoneNum] = useState('');
+    const [lastPhoneNum, setLastPhoneNum] = useState('');
 
     useEffect(() => {
         if (scene === 2 && signInRefs[0]?.current) {
@@ -97,7 +103,6 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         if (scene === 4.1 && changePasswordRefs[0]?.current) {
             changePasswordRefs[0].current.focus();
         }
-
     }, [scene]);
 
     const handleSignIn = () => {
@@ -178,6 +183,47 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         }
     };
 
+    const handleChangLastJumin = (e) => {
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setLastJuminNum(filteredInput);
+    }
+
+    const handleChangJuminNum = (e) => {
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setFirstJuminNum(filteredInput);
+    }
+
+    const handleMiddlePhoneNum = (e) => {
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setMiddlePhoneNum(filteredInput);
+    }
+
+    const handleLastPhoneNum = (e) => {
+
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setLastPhoneNum(filteredInput);
+    }
+
     switch (scene) {
         // 첫 화면
         case 0:
@@ -251,16 +297,100 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
             </StartDisplay>
         // 회원가입 - 본인인증
         case 3.2:
-            return <StartDisplay>
-                <Button
-                    ref={passButton}
-                    tabIndex={0}
-                    style={"pass"}
-                    width={"205px"}
-                    height={"50px"}
-                    onClick={handlePassAuth}
+            return <StartDisplay mode={"signup"}>
+                <img
+                    src={ic_pass}
+                    style={{ width: '50px', height: '50px' }} />
+                <Margin value={10}></Margin>
+                <Form>
+                    <Content2>이름</Content2>
+                    <Input
+                        width={"295px"}
+                        height={"30px"}
+                        type="text"
+                        maxLength={4}
+                        ref={passRef[0]}
+                    />
+                </Form>
+                <Margin value={5} />
+                <Form>
+                    <Content2>주민번호</Content2>
+                    <Input
+                        type={"text"}
+                        width={"142px"}
+                        height={"30px"}
+                        value={firstJuminNum}
+                        onChange={handleChangJuminNum}
+                        maxLength={6}
+                    />
+                    <Input
+                        type={"password"}
+                        width={"142px"}
+                        height={"30px"}
+                        value={lastJuminNum}
+                        maxLength={7}
+                        onChange={handleChangLastJumin}
+                    />
+                </Form>
+                <Margin value={5} />
+                <Form>
+                    <Content2>휴대폰 번호</Content2>
+                    <select
+                        name="gamemode"
+                        ref={passRef[2]}
+                        style={{ width: '85px', height: '30px', fontSize: '18px' }}
+                    >
+                        <option value="010">010</option>
+                        <option value="011">011</option>
+                        <option value="016">016</option>
+                        <option value="017">017</option>
+                        <option value="018">018</option>
+                        <option value="019">019</option>
+                    </select>
+                    <Input
+                        type={"text"}
+                        width={"100px"}
+                        height={"30px"}
+                        value={middlePhoneNum}
+                        onChange={handleMiddlePhoneNum}
+                        maxLength={4}
+                    />
+                    <Input
+                        width={"100px"}
+                        height={"30px"}
+                        value={lastPhoneNum}
+                        onChange={handleLastPhoneNum}
+                        maxLength={4}
+                    />
+                </Form>
+                <select
+                    name="gamemode"
+                    ref={passRef[3]}
+                    style={{ width: '100px', height: '30px', fontSize: '18px' }}
                 >
-                    PASS 본인인증하기</Button>
+                    <option disabled="true">통신사</option>
+                    <option value="0">SKT</option>
+                    <option value="1">KT</option>
+                    <option value="2">LG</option>
+                </select>
+                <Margin value={5} />
+                <ModeStyle><Button
+                    tabIndex={0}
+                    style={"gray"}
+                    width={"100px"}
+                    height={"50px"}
+                >
+                    닫기</Button>
+
+                    <Button
+                        ref={passButton}
+                        tabIndex={0}
+                        style={"pass"}
+                        width={"205px"}
+                        height={"50px"}
+                        onClick={handlePassAuth}
+                    >
+                        인증 요청</Button></ModeStyle>
             </StartDisplay>
         // 회원가입 - 정보 입력
         case 3.3:
