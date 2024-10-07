@@ -14,6 +14,7 @@ import sendPostIdentityVerify from '../services/VerifyIdentity';
 import sendPostIdentityVerifySecond from '../services/VerifyIdentityAdd';
 import Swal from 'sweetalert2';
 import sendSignUpRequest from '../services/PostMember';
+import sendLoginRequest from '../services/LoginRequest';
 
 export const ModeStyle = styled.div`
     display: flex;
@@ -113,7 +114,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         }
     }, [scene]);
 
-    const handleSignIn = () => {
+    const handleSignIn = async() => {
         const id = signInRefs[0].current.value; // ID 값 가져오기
         const password = signInRefs[1].current.value; // 비밀번호 값 가져오기
 
@@ -121,6 +122,9 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         let result = valifySignIn(id, password) ? true : false;
 
         // TODO : 로그인 비즈니스 로직 구현
+
+        const response = await sendLoginRequest(id, password)
+
         if (result) {
             navigate("/loading");
         }
@@ -143,7 +147,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
             response = await sendSignUpRequest(requestBody);
         }catch{
             console.log("error");
-            console.log("asdasdasd", response.error);
+            alert("서버 에러입니다.");
         }
 
         if (result) {
