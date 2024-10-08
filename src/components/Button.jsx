@@ -4,11 +4,12 @@ import styled from "styled-components";
 const ButtonStyleGray = styled.button`
     width: ${(props) => props.width};
     height: ${(props) => props.height};
-    border: ${(props) => props.border || "1px solid black" };
+    border: ${(props) => props.border || "1px solid black"};
     border-radius: ${(props) => props.borderRadius};
-    background-color: rgb(198, 198, 198);
+    background-color: ${(props) => props.backgroundColor || 'rgb(198, 198, 198)'};
     font-family: Pixel;
     font-size: ${(props) => props.fontSize || '22px'};
+    margin-right: ${(props) => props.marginRight};
 
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
 
@@ -22,10 +23,32 @@ const ButtonStyleGray = styled.button`
     }
 `;
 
+const ButtonStyleDefault = styled.button`
+    width: ${(props) => props.width};
+    height: ${(props) => props.height};
+    border: ${(props) => props.border || "1px solid black"};
+    border-radius: ${(props) => props.borderRadius};
+    background-color: ${(props) => props.backgroundColor || 'rgb(198, 198, 198)'};
+    font-family: Pixel;
+    font-size: ${(props) => props.fontSize || '22px'};
+    color: ${(props) => props.color};
+    margin-right: ${(props) => props.marginRight};
+    
+    transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
+    
+    &:hover {
+        transform: scale(0.95); /* 클릭 시 버튼 크기 축소 */
+    }
+
+    &:active {
+        transform: scale(0.90); /* 클릭 시 버튼 크기 축소 */
+    }
+`;
+
 const ButtonStylePass = styled.button`
     width: ${(props) => props.width};
     height: ${(props) => props.height};
-    border: ${(props) => props.border || "1px solid black" };
+    border: ${(props) => props.border || "1px solid black"};
     border-radius: ${(props) => props.borderRadius};
     background-color: rgb(236, 99, 99);
     font-family: Pixel;
@@ -44,7 +67,7 @@ const ButtonStylePass = styled.button`
 `;
 
 const Button = forwardRef((props, ref) => {
-    const { style, tabIndex, width, height, onClick, onKeyDown, children, border, borderRadius, fontSize } = props;
+    const { style, tabIndex, width, height, onClick, onKeyDown, marginRight, children, border, color, backgroundColor, borderRadius, fontSize } = props;
 
     switch (style) {
         case 'gray': {
@@ -59,6 +82,8 @@ const Button = forwardRef((props, ref) => {
                     borderRadius={borderRadius}
                     fontSize={fontSize}
                     onKeyDown={onKeyDown}
+                    backgroundColor={backgroundColor}
+                    color={color}
                 >
                     {children}
                 </ButtonStyleGray>
@@ -79,6 +104,26 @@ const Button = forwardRef((props, ref) => {
                 </ButtonStylePass>
             );
         }
+
+        default:
+            return (
+                <ButtonStyleDefault
+                    ref={ref}
+                    tabIndex={tabIndex}
+                    width={width}
+                    height={height}
+                    onClick={onClick}
+                    border={border}
+                    borderRadius={borderRadius}
+                    fontSize={fontSize}
+                    onKeyDown={onKeyDown}
+                    backgroundColor={backgroundColor}
+                    color={color}
+                    marginRight={marginRight}
+                >
+                    {children}
+                </ButtonStyleDefault>
+            );
     }
 });
 

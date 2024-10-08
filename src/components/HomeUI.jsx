@@ -30,14 +30,16 @@ const Gameboy2 = styled.div`
 `;
 
 const HomeUI = (props) => {
-    const { children, navMode, AddRoom, category } = props;
+    const { children, AddRoom, category, gamemode } = props;
+    const [member, setMember] = useState('');
     const member = getLocalStorage('member');
+    const navi = gamemode ? null : <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
 
     return (
         <Wrap>
             <Gameboy0 />
             <HomeDisplay>
-                <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />
+                {navi}
                 {children}
             </HomeDisplay>
             <Gameboy2 />
