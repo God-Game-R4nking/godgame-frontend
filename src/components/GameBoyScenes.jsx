@@ -9,7 +9,6 @@ import ic_pass from '../assets/ic_pass.webp';
 import { valifySignIn, valifySignUp, valifyChangePassword } from '../utils/Validation';
 import { useNavigate } from 'react-router-dom';
 import { Title, ColorText, SubTitle, Content, Content2, Content3, Presskey } from './Texts';
-import { setLocalStorage, getLocalStorage } from '../utils/LocalStorageManager';
 
 export const ModeStyle = styled.div`
     display: flex;
@@ -169,15 +168,10 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     }
 
     const handlePassAuth = () => {
-        const name = passRef[0].current.value;
-        const jumin = firstJuminNum + "" + lastJuminNum;
-        const phone = passRef[1].current.value + "" + middlePhoneNum + "" + lastPhoneNum;
-        const telecom = passRef[2].current.value;
-        
-        console.log("패스 인증 시도 : " + name + " " + jumin + " " + phone + " " + telecom);
+        console.log("패스 인증 시도");
         // TODO : 패스 인증 비즈니스 로직 구현
         let result = true;
-        
+
         if (result) {
             setScene(3.3);
         }
@@ -189,16 +183,6 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         }
     };
 
-    const handleChangJuminNum = (e) => {
-        const input = e.target.value;
-
-        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
-        const filteredInput = input
-            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
-
-        setFirstJuminNum(filteredInput);
-    }
-
     const handleChangLastJumin = (e) => {
         const input = e.target.value;
 
@@ -209,6 +193,15 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         setLastJuminNum(filteredInput);
     }
 
+    const handleChangJuminNum = (e) => {
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setFirstJuminNum(filteredInput);
+    }
 
     const handleMiddlePhoneNum = (e) => {
         const input = e.target.value;
@@ -221,6 +214,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     }
 
     const handleLastPhoneNum = (e) => {
+
         const input = e.target.value;
 
         // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
@@ -342,8 +336,8 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
                 <Form>
                     <Content2>휴대폰 번호</Content2>
                     <select
-                        name="phone"
-                        ref={passRef[1]}
+                        name="gamemode"
+                        ref={passRef[2]}
                         style={{ width: '85px', height: '30px', fontSize: '18px' }}
                     >
                         <option value="010">010</option>
@@ -370,8 +364,8 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
                     />
                 </Form>
                 <select
-                    name="telecom"
-                    ref={passRef[2]}
+                    name="gamemode"
+                    ref={passRef[3]}
                     style={{ width: '100px', height: '30px', fontSize: '18px' }}
                 >
                     <option disabled="true">통신사</option>

@@ -7,6 +7,7 @@ import MyProfie from "../components/MyProfile";
 import { Content3 } from "../components/Texts";
 import AddRoomModal from "../components/AddRoomModal";
 import { useNavigate } from "react-router-dom";
+import { createGame } from "../services/Game";
 
 export const ScrollDiv = styled.div`
   overflow-y: auto;
@@ -56,7 +57,7 @@ export const Title = styled.div`
     overflow: hidden;
     text-overflow: ellipsis;
     white-space: nowrap;
-    word-break:break-all
+    word-break:break-all;
 `;
 
 export const GameMode = styled.div`
@@ -107,24 +108,66 @@ export const Status = styled.div`
     justify-content: center;
 `;
 
+const FriendListTitle = styled.div`
+    width: 300px;
+    height: 45px;
+    border-radius: 10px;
+    margin: 0 auto;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5px;
+    font-size: 20px;
+`;
+
+const FriendList = styled.div`
+    width: 300px;
+    height: 350px;
+    border-radius: 10px;
+    margin: 0 auto;
+    background-color: #D9D9D9;
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    margin-top: 5px;
+    font-size: 20px;
+`;
+
 const LobbyPage = () => {
     const [rooms, setRooms] = useState([]);
     const navigate = useNavigate();
+    const response = null;
 
-    const handleJoinRoom = () => {
-        navigate("/room")
-    }
-
-    const handleAddRoom = (number, title, gameMode, hostname, headCount, status) => {
+    const handleAddRoom = (title, gameMode) => {
         // TODO : 방생성 로직 생성
-        setRooms((prevRooms) => [...prevRooms, 
-            <Room
-            title={title}
-            gameMode={gameMode}
-            headCount={headCount}
-            onClick={handleJoinRoom}
-            />
-            ]);
+        response = createGame(title, 1, 1);
+
+        if (response.status === 201) {
+            console.log(response.data);
+            const gameRoomId = response.data.gameRoomId;
+            const gameId = response.data.gameId;
+            const gameRoomName = response.data.gameRoomName;
+            const currentPopulation = response.data.currentPopulation;
+            const maxPopulation = response.data.maxPopulation;
+            const gameRoomStatus = response.data.gameRoomStatus;
+
+            navigate("/room", {
+                gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus
+            });
+        }
+
+        // useEffect 로 설정해야하는 부분.
+        // setRooms((prevRooms) => [...prevRooms,
+        // <Room
+        //     number={number}
+        //     title={title}
+        //     gameMode={gameMode}
+        //     hostname={hostname}
+        //     headCount={headCount | "1/8"}
+        //     status={status}
+        // />
+        // ]);
     };
 
     return (
@@ -141,12 +184,17 @@ const LobbyPage = () => {
                     </LayoutStyle>
                     {rooms}
                 </ScrollDiv>
-                <MyProfie>
-                    <Content3>zl존법사짱짱</Content3>
-                    <Margin value={"5px"} />
-                    <Content3>전 적 1승 9패 (10%)</Content3>
-                    <Content3>순 위 10등</Content3>
-                </MyProfie>
+                <LayoutStyle display={"flex"} flexDirection={"column"}>
+                    <MyProfie>
+                        <Content3>zl존법사짱짱</Content3>
+                        <Margin value={"5px"} />
+                        <Content3>전 적 1승 9패 (10%)</Content3>
+                        <Content3>순 위 10등</Content3>
+                    </MyProfie>
+                    <FriendListTitle>&nbsp; 👥 친구 목록</FriendListTitle>
+                    <FriendList></FriendList>
+                </LayoutStyle>
+
             </LayoutStyle>
         </HomeUI>
     );

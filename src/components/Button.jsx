@@ -4,10 +4,11 @@ import styled from "styled-components";
 const ButtonStyleGray = styled.button`
     width: ${(props) => props.width};
     height: ${(props) => props.height};
-    border: 1px solid black;
+    border: ${(props) => props.border || "1px solid black" };
+    border-radius: ${(props) => props.borderRadius};
     background-color: rgb(198, 198, 198);
     font-family: Pixel;
-    font-size: 22px;
+    font-size: ${(props) => props.fontSize || '22px'};
 
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
 
@@ -24,10 +25,11 @@ const ButtonStyleGray = styled.button`
 const ButtonStylePass = styled.button`
     width: ${(props) => props.width};
     height: ${(props) => props.height};
-    border: 1px solid black;
+    border: ${(props) => props.border || "1px solid black" };
+    border-radius: ${(props) => props.borderRadius};
     background-color: rgb(236, 99, 99);
     font-family: Pixel;
-    font-size: 22px;
+    font-size: ${(props) => props.fontSize || '22px'};
 
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
 
@@ -42,7 +44,7 @@ const ButtonStylePass = styled.button`
 `;
 
 const Button = forwardRef((props, ref) => {
-    const { style, tabIndex, width, height, onClick, onKeyDown, children } = props;
+    const { style, tabIndex, width, height, onClick, onKeyDown, children, border, borderRadius, fontSize } = props;
 
     switch (style) {
         case 'gray': {
@@ -53,6 +55,9 @@ const Button = forwardRef((props, ref) => {
                     width={width}
                     height={height}
                     onClick={onClick}
+                    border={border}
+                    borderRadius={borderRadius}
+                    fontSize={fontSize}
                     onKeyDown={onKeyDown}
                 >
                     {children}
