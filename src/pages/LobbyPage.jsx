@@ -7,7 +7,8 @@ import MyProfie from "../components/MyProfile";
 import { Content3 } from "../components/Texts";
 import AddRoomModal from "../components/AddRoomModal";
 import { useNavigate } from "react-router-dom";
-import { createGame } from "../services/Game";
+import createGame from "../services/Game"
+import { getLocalStorage } from "../utils/LocalStorageManager";
 
 export const ScrollDiv = styled.div`
   overflow-y: auto;
@@ -137,23 +138,20 @@ const FriendList = styled.div`
 const LobbyPage = () => {
     const [rooms, setRooms] = useState([]);
     const navigate = useNavigate();
-    const response = null;
+    const member = JSON.parse(getLocalStorage('member'));
 
-    const handleAddRoom = (title, gameMode) => {
-        response = createGame(title, 1, 1);
+    const handleAddRoom = async(title) => {
+        const requestBody = {gameRoomName : title , memberId: member.memberId, gameId: 1};
+        const response = await createGame(requestBody);
 
-        if (response.status === 201) {
-            console.log(response.data);
-            const gameRoomId = response.data.gameRoomId;
-            const gameId = response.data.gameId;
-            const gameRoomName = response.data.gameRoomName;
-            const currentPopulation = response.data.currentPopulation;
-            const maxPopulation = response.data.maxPopulation;
-            const gameRoomStatus = response.data.gameRoomStatus;
-
+        if (response) {
+            const { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds } = response;
+    
             navigate("/room", {
-                gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus
+                state: { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds }
             });
+        } else {
+            console.error("방 생성 실패 또는 에러 처리");
         }
 
         // useEffect 로 설정해야하는 부분.
@@ -185,10 +183,9 @@ const LobbyPage = () => {
                 </ScrollDiv>
                 <LayoutStyle display={"flex"} flexDirection={"column"}>
                     <MyProfie>
-                        <Content3>zl존법사짱짱</Content3>
+                        <Content3>{member.nickName}</Content3>
                         <Margin value={"5px"} />
-                        <Content3>전 적 1승 9패 (10%)</Content3>
-                        <Content3>순 위 10등</Content3>
+                        <Content3>종합 점수 : {member.totalPoint}</Content3>
                     </MyProfie>
                     <FriendListTitle>&nbsp; 👥 친구 목록</FriendListTitle>
                     <FriendList></FriendList>

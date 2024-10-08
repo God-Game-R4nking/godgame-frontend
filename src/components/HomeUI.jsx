@@ -4,8 +4,7 @@ import styled from "styled-components";
 import gameboy_zoom0 from "../assets/gameboy_zoom0.png";
 import gameboy_zoom2 from "../assets/gameboy_zoom2.png";
 import HomeDisplay from "./HomeDisplay";
-import getMemberRequest from "../services/GetMember";
-import { useEffect } from "react";
+import { getLocalStorage } from "../utils/LocalStorageManager";
 
 const Wrap = styled.div`
     display: flex;
@@ -32,29 +31,13 @@ const Gameboy2 = styled.div`
 
 const HomeUI = (props) => {
     const { children, navMode, AddRoom, category } = props;
-    const [member, setMember] = useState('');
-
-    const getMember = async () => {
-        try {
-            const response = await getMemberRequest();
-            console.log("response", response);
-            setMember(response.data);
-            console.log(member);
-        }
-        catch {
-            console.log("서버 에러입니다");
-        }
-    };
-
-    useEffect(() => {
-        getMember();
-    }, []);
+    const member = getLocalStorage('member');
 
     return (
         <Wrap>
             <Gameboy0 />
             <HomeDisplay>
-                <NavigationBar mode={navMode} username={member.nickName} AddRoom={AddRoom} category={category} />
+                <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />
                 {children}
             </HomeDisplay>
             <Gameboy2 />
