@@ -4,7 +4,10 @@ import styled from "styled-components";
 const InputStyle = styled.input`
     width: ${(props) => props.width};
     height: ${(props) => props.height};
-    border: 4px solid black;
+    margin-bottom: ${(props) => props.marginBottom};
+    border-radius: ${(props) => props.borderRadius};
+    background-color: ${(props) => props.backgroundColor};
+    border: ${(props) => props.border || "4px solid black"};
     font-size: 18px;
     &::placeholder {
         font-size: 13px;
@@ -12,7 +15,7 @@ const InputStyle = styled.input`
 `;
 
 const Input = forwardRef((props, ref) => {
-    const { width, height, type, onKeyDown, min, max, maxLength, onChange, textAlign, placeholder, oninput, value} = props;
+    const { width, height, marginBottom, borderRadius, border, backgroundColor, type, onKeyDown, min, max, maxLength, onChange, textAlign, placeholder, oninput, value} = props;
 
     return (
         <InputStyle
@@ -20,6 +23,10 @@ const Input = forwardRef((props, ref) => {
             type={type}
             width={width}
             height={height}
+            marginBottom={marginBottom}
+            border={border}
+            borderRadius={borderRadius}
+            backgroundColor={backgroundColor}
             textAlign={textAlign}
             maxLength={maxLength}
             placeholder={placeholder}

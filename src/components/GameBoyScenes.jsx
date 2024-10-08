@@ -190,7 +190,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
             setScene(1);
         }
     }
-
+    
     const handlePassAuth = async () => { // async 키워드 추가
         const name = passRef[0].current.value;
         const jumin = firstJuminNum + "" + lastJuminNum;
@@ -240,6 +240,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
             // 인증 실패 처리
             console.error("인증 실패:", result.message); // 서버에서 받은 오류 메시지
             Swal.fire('실패', '인증에 실패했습니다. 다시 시도해주세요.', 'error');
+
         }
     } catch (error) {
         console.error('Error during identity verification:', error);
@@ -259,16 +260,6 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         }
     };
 
-    const handleChangJuminNum = (e) => {
-        const input = e.target.value;
-
-        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
-        const filteredInput = input
-            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
-
-        setFirstJuminNum(filteredInput);
-    }
-
     const handleChangLastJumin = (e) => {
         const input = e.target.value;
 
@@ -279,6 +270,15 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         setLastJuminNum(filteredInput);
     }
 
+    const handleChangJuminNum = (e) => {
+        const input = e.target.value;
+
+        // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
+        const filteredInput = input
+            .replace(/[^0-9]/g, '')  // 숫자와 소수점 외의 문자는 제거
+
+        setFirstJuminNum(filteredInput);
+    }
 
     const handleMiddlePhoneNum = (e) => {
         const input = e.target.value;
@@ -291,6 +291,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     }
 
     const handleLastPhoneNum = (e) => {
+
         const input = e.target.value;
 
         // 숫자와 소수점만 허용하고, 두 번째 소수점은 제거
@@ -412,8 +413,8 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
                 <Form>
                     <Content2>휴대폰 번호</Content2>
                     <select
-                        name="phone"
-                        ref={passRef[1]}
+                        name="gamemode"
+                        ref={passRef[2]}
                         style={{ width: '85px', height: '30px', fontSize: '18px' }}
                     >
                         <option value="010">010</option>
@@ -440,8 +441,8 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
                     />
                 </Form>
                 <select
-                    name="telecom"
-                    ref={passRef[2]}
+                    name="gamemode"
+                    ref={passRef[3]}
                     style={{ width: '100px', height: '30px', fontSize: '18px' }}
                 >
                     <option disabled="true">통신사</option>

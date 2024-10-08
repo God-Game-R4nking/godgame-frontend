@@ -7,10 +7,14 @@ const StyledDiv = styled.div`
     align-items: ${(props) => props.$alignItems};
     justify-content: ${(props) => props.$justifyContent};
     margin-bottom: ${(props) => props.$marginBottom};
+    margin-right: ${(props) => props.$marginRight};
+    position: ${(props) => props.$position};
+    left: ${(props) => props.$left};
+    right: ${(props) => props.$right};
 `;
 
 const LayoutStyle = (props) => {
-    const { display, flexDirection, alignItems, justifyContent, children, marginBottom } = props;
+    const { display, flexDirection, alignItems, justifyContent, children, marginRight, marginBottom, position, left, right } = props;
 
     return (
         <StyledDiv
@@ -19,6 +23,10 @@ const LayoutStyle = (props) => {
             $alignItems={alignItems}
             $justifyContent={justifyContent}
             $marginBottom={marginBottom}
+            $marginRight={marginRight}
+            $position={position}
+            $left={left}
+            $right={right}
         >
             {children}
         </StyledDiv>
