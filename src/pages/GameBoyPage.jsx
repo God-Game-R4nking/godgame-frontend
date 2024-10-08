@@ -138,7 +138,7 @@ const GameBoyPage = () => {
                 if (e.key === 'Escape') setScene(1);
 
             case 3.4:
-                // if (e.key === 'Enter') setScene(1);
+                if (e.key === 'Enter') setScene(1);
                 break;
 
             case 4:
