@@ -114,7 +114,7 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         }
     }, [scene]);
 
-    const handleSignIn = async() => {
+    const handleSignIn = async () => {
         const id = signInRefs[0].current.value; // ID 값 가져오기
         const password = signInRefs[1].current.value; // 비밀번호 값 가져오기
 
@@ -123,29 +123,30 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
 
         // TODO : 로그인 비즈니스 로직 구현
 
-        const response = await sendLoginRequest(id, password)
-        
-        if (result) {
-            navigate("/loading");
+        const response = await sendLoginRequest(id, password);
+        if (response) {
+            if (result) {
+                navigate("/loading");
+            }
         }
     };
 
-    const handleSignUp = async() => {
+    const handleSignUp = async () => {
         const id = signUpRefs[0].current.value;
         const password = signUpRefs[1].current.value;
         const reEnterPassword = signUpRefs[2].current.value;
         const nickname = signUpRefs[3].current.value;
-        const jumin = userJumin.substring(0,6) + "*******";
-        const phone = userPhone.substring(0,3) + "-" + userPhone.substring(3,7) + "-" + userPhone.substring(7,11);
+        const jumin = userJumin.substring(0, 6) + "*******";
+        const phone = userPhone.substring(0, 3) + "-" + userPhone.substring(3, 7) + "-" + userPhone.substring(7, 11);
 
         console.log(jumin);
         console.log(phone);
         let result = valifySignUp(id, password, reEnterPassword, nickname, signUpRefs) ? true : false;
-        const requestBody = {id : id, password : password, memberName : userName, nickName : nickname, phone : phone, identificationNumber : jumin}
+        const requestBody = { id: id, password: password, memberName: userName, nickName: nickname, phone: phone, identificationNumber: jumin }
         let response;
-        try{
+        try {
             response = await sendSignUpRequest(requestBody);
-        }catch{
+        } catch {
             console.log("error");
             alert("서버 에러입니다.");
         }
@@ -209,47 +210,47 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
             const parsedResponse = JSON.parse(result.response);
             // 응답 처리: 결과에 따라 scene 설정
             console.log(parsedResponse.result.code)
-           // 응답 처리: 결과에 따라 scene 설정
-        if (parsedResponse.result.code === "CF-03002") { 
-            // PASS 인증 확인을 요청
-            const { isConfirmed } = await Swal.fire({
-                title: 'PASS 인증을 해주세요',
-                text: "인증이 완료된 후에 확인 버튼을 눌러주세요",
-                icon: 'warning',
-                showCancelButton: true,
-                confirmButtonText: '확인',
-                cancelButtonText: '취소',
-            });
+            // 응답 처리: 결과에 따라 scene 설정
+            if (parsedResponse.result.code === "CF-03002") {
+                // PASS 인증 확인을 요청
+                const { isConfirmed } = await Swal.fire({
+                    title: 'PASS 인증을 해주세요',
+                    text: "인증이 완료된 후에 확인 버튼을 눌러주세요",
+                    icon: 'warning',
+                    showCancelButton: true,
+                    confirmButtonText: '확인',
+                    cancelButtonText: '취소',
+                });
 
-            if (isConfirmed) {
-                // 확인을 누르면 두 번째 인증 요청을 보냄
-                const secondResult = await sendPostIdentityVerifySecond(params);
-                const parsedResponse2 = JSON.parse(secondResult.response);
-                // 추가 처리: secondResult에 따라 처리
-                console.log(parsedResponse2.result.code);
-                if (parsedResponse2.result.code === "CF-00000" || parsedResponse2.result.code === "CF-00025") { // 성공 코드로 대체
-                    Swal.fire('성공', '인증이 성공했습니다.', 'success');
-                    setScene(3.3); // 새로운 씬으로 변경
+                if (isConfirmed) {
+                    // 확인을 누르면 두 번째 인증 요청을 보냄
+                    const secondResult = await sendPostIdentityVerifySecond(params);
+                    const parsedResponse2 = JSON.parse(secondResult.response);
+                    // 추가 처리: secondResult에 따라 처리
+                    console.log(parsedResponse2.result.code);
+                    if (parsedResponse2.result.code === "CF-00000" || parsedResponse2.result.code === "CF-00025") { // 성공 코드로 대체
+                        Swal.fire('성공', '인증이 성공했습니다.', 'success');
+                        setScene(3.3); // 새로운 씬으로 변경
+                    } else {
+                        Swal.fire('실패', '인증에 실패했습니다. 다시 시도해주세요.', 'error');
+                    }
                 } else {
-                    Swal.fire('실패', '인증에 실패했습니다. 다시 시도해주세요.', 'error');
+                    console.log("인증 요청이 취소되었습니다.");
                 }
             } else {
-                console.log("인증 요청이 취소되었습니다.");
+                // 인증 실패 처리
+                console.error("인증 실패:", result.message); // 서버에서 받은 오류 메시지
+                Swal.fire('실패', '인증에 실패했습니다. 다시 시도해주세요.', 'error');
             }
-        } else {
-            // 인증 실패 처리
-            console.error("인증 실패:", result.message); // 서버에서 받은 오류 메시지
-            Swal.fire('실패', '인증에 실패했습니다. 다시 시도해주세요.', 'error');
+        } catch (error) {
+            console.error('Error during identity verification:', error);
+            Swal.fire('서버 오류', '서버 오류가 발생했습니다. 나중에 다시 시도해주세요.', 'error');
         }
-    } catch (error) {
-        console.error('Error during identity verification:', error);
-        Swal.fire('서버 오류', '서버 오류가 발생했습니다. 나중에 다시 시도해주세요.', 'error');
-    }
 
-    setUserName(name);
-    setUserJumin(jumin);
-    setUserPhone(phone);
-    console.log(result);
+        setUserName(name);
+        setUserJumin(jumin);
+        setUserPhone(phone);
+        console.log(result);
     };
 
 
