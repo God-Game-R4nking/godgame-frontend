@@ -157,6 +157,7 @@ const GameBoyPage = () => {
             gameboyRef.current.focus();
         }
         console.log("scene : " + scene);
+        console.log(process.env.REACT_APP_BACKEND_URL);
     }, [scene]);
 
     useEffect(() => {

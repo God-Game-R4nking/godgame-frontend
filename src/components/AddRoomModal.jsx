@@ -143,10 +143,8 @@ const AddRoomModal = ({ ButtonStyle, AddRoom }) => {
                                 width={"370px"}
                                 height={"45px"}
                                 onClick={() => {
-                                    console.log(refs[0].current.value); // 여기에서 확인
-                                    AddRoom(refs[0].current.value, refs[1].current.value, refs[2].current.value);
+                                    AddRoom(refs[0].current.value);
                                     setIsOpen(false);
-                                    // TODO : 게임방 생성 로직 구현
                                 }}
                             >
                                 생성하기

@@ -22,7 +22,7 @@ const Div = styled.div`
 `;
 
 const NavigationBar = (props) => {
-    const { mode, username, AddRoom } = props
+    const { mode, username, AddRoom, category } = props
 
     if (mode === 'lobby') {
         return (
@@ -65,7 +65,7 @@ const NavigationBar = (props) => {
                     <Banner><Title>{username} 환영합니다</Title></Banner>
                 </NavBar>
                 <Div>
-                    <TitleBar />
+                    <TitleBar>&nbsp;{category}</TitleBar>
                 </Div>
             </Nav>
         );
