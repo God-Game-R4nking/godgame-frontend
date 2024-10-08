@@ -31,8 +31,10 @@ const Gameboy2 = styled.div`
 `;
 
 const HomeUI = (props) => {
-    const { children, navMode, AddRoom, category } = props;
+    const { children, navMode, AddRoom, category, gamemode } = props;
     const [member, setMember] = useState('');
+
+    const navi = gamemode ? null : <NavigationBar mode={navMode} username={member.nickName} AddRoom={AddRoom} category={category} />;
 
     const getMember = async () => {
         try {
@@ -54,7 +56,7 @@ const HomeUI = (props) => {
         <Wrap>
             <Gameboy0 />
             <HomeDisplay>
-                <NavigationBar mode={navMode} username={member.nickName} AddRoom={AddRoom} category={category} />
+                {navi}
                 {children}
             </HomeDisplay>
             <Gameboy2 />
