@@ -5,7 +5,7 @@ import { setLocalStorage } from "../utils/LocalStorageManager";
 
 const sendLoginRequest = async (idInput, passwordInput) => {
     try {
-        const response = await axios.post('http://172.30.1.33:8080/auth/login',
+        const response = await axios.post('http://localhost:8080/auth/login',
             {
                 username: idInput,
                 password: passwordInput,
