@@ -22,13 +22,11 @@ const Img = styled.div`
     margin-bottom: 10px;
 `;
 
-const UserProfileInRoom = (props) => {
-
+const UserProfileInRoom = ({ nickname }) => {
     return (
         <Wrap>
             <Img></Img>
-            <Content2>가나다라마바사아</Content2>
-
+            <Content2>{nickname}</Content2>
         </Wrap>
     );
 }

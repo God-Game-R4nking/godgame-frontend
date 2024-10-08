@@ -15,6 +15,7 @@ import sendPostIdentityVerifySecond from '../services/VerifyIdentityAdd';
 import Swal from 'sweetalert2';
 import sendSignUpRequest from '../services/PostMember';
 import sendLoginRequest from '../services/LoginRequest';
+import { useMember } from '../hooks/GetMemberhook';
 
 export const ModeStyle = styled.div`
     display: flex;
@@ -91,6 +92,8 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     const [userName, setUserName] = useState('');
     const [userPhone, setUserPhone] = useState('');
     const [userJumin, setUserJumin] = useState('');
+    const { fetchMember } = useMember();
+
 
     useEffect(() => {
         if (scene === 2 && signInRefs[0]?.current) {
@@ -122,12 +125,17 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         let result = valifySignIn(id, password) ? true : false;
 
         // TODO : 로그인 비즈니스 로직 구현
-
-        const response = await sendLoginRequest(id, password);
-        if (response) {
-            if (result) {
+        try {
+            const response = await sendLoginRequest(id, password);
+            if (response) {
+                await fetchMember(); // 로그인 성공 시 멤버 정보 가져오기
                 navigate("/loading");
+            } else {
+                // 로그인 실패 처리
+                console.error("로그인 실패");
             }
+        } catch (error) {
+            console.error("로그인 에러", error);
         }
     };
 
