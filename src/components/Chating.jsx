@@ -2,6 +2,7 @@ import React from "react";
 import styled from "styled-components";
 import LayoutStyle from "./LayoutStyle";
 import Input from "./Input";
+import Button from "./Button";
 
 export const ScrollDiv = styled.div`
     overflow-y: auto;
@@ -23,25 +24,31 @@ export const ScrollDiv = styled.div`
     }
 `;
 
-const Chat = styled.input`
-    width: 320px;
-    height: 30px;
-    margin-bottom: 5px;
-    border-radius: 10px;
-    background-color: #808080;
-`;
-
 const Chating = (props) => {
     return (
         <ScrollDiv>
             <Input
-                width={"320px"}
-                height={"35px"}
+                width={"310px"}
+                height={"45px"}
                 marginBottom={"5px"}
                 borderRadius={"10px"}
                 backgroundColor={"#808080"}
                 border={"none"}
+                paddingLeft={"10px"}
             ></Input>
+            <LayoutStyle
+                position={"relative"}
+                left={"120px"}
+                top={"39px"}
+            >
+                <Button
+                    style={"gray"}
+                    width={"70px"}
+                    height={"30px"}
+                    borderRadius={"10px"}
+                >
+                    SEND</Button>
+            </LayoutStyle>
         </ScrollDiv>
     );
 };

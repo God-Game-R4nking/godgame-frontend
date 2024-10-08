@@ -29,12 +29,12 @@ const Gameboy2 = styled.div`
 `;
 
 const HomeUI = (props) => {
-    const { children, navMode, AddRoom } = props;
+    const { children, navMode, AddRoom, category } = props;
     return (
         <Wrap>
             <Gameboy0 />
             <HomeDisplay>
-                <NavigationBar mode={navMode} AddRoom={AddRoom} />
+                <NavigationBar mode={navMode} AddRoom={AddRoom} category={category} />
                 {children}
             </HomeDisplay>
             <Gameboy2 />

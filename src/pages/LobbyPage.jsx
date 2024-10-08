@@ -140,7 +140,6 @@ const LobbyPage = () => {
     const response = null;
 
     const handleAddRoom = (title, gameMode) => {
-        // TODO : 방생성 로직 생성
         response = createGame(title, 1, 1);
 
         if (response.status === 201) {

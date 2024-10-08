@@ -9,7 +9,7 @@ import Button from "../components/Button";
 
 const InfoBar = styled.div`
     background-color: #BBBBBB;
-    width: 99.8%;
+    width: 100%;
     height: 50px;
     display: flex;
     flex-direction: row;
@@ -37,28 +37,28 @@ const RoomPage = () => {
 
     return (
         <HomeUI navMode={"room"}>
-            <InfoBar>
-                <div>&nbsp;&nbsp;{gameRoomId}</div>
-                <div>{gameRoomName}</div>
-                <div>{currentPopulation + "/" + maxPopulation}&nbsp;&nbsp;</div>
-            </InfoBar>
-            <LayoutStyle display={"flex"} flexDirection={"column"} width={"100%"} height={"100%"}>
-                <LayoutStyle display={"flex"} flexDirection={"row"}>
-                    <UserList>
-                        <UserProfileInRoom></UserProfileInRoom>
-                        <UserProfileInRoom></UserProfileInRoom>
-                        <UserProfileInRoom></UserProfileInRoom>
-                        <UserProfileInRoom></UserProfileInRoom>
-                        <UserProfileInRoom></UserProfileInRoom>
-                        <UserProfileInRoom></UserProfileInRoom>
-                    </UserList>
+            <LayoutStyle display={"flex"} flexDirection={"row"} width={"100%"} height={"100%"}>
+                <LayoutStyle display={"flex"} flexDirection={"column"} width={"70%"} height={"100%"}>
+                    <InfoBar>
+                        <div>&nbsp;&nbsp;{gameRoomId}</div>
+                        <div>{gameRoomName}</div>
+                        <div>{currentPopulation + "/" + maxPopulation}&nbsp;&nbsp;</div>
+                    </InfoBar>
+                    <LayoutStyle display={"flex"} width={"100%"}>
+                        <UserList>
+                            <UserProfileInRoom></UserProfileInRoom>
+                            <UserProfileInRoom></UserProfileInRoom>
+                        </UserList>
+                    </LayoutStyle>
+                </LayoutStyle>
+                <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
                     <Chating></Chating>
                 </LayoutStyle>
-                <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"}>
-                    <Button style="gray" width={"345px"} height={"70px"} border={"solid 5px #D9D9D9"} borderRadius={"10px"} fontSize={"40px"}>GAME START</Button>
-                </LayoutStyle>
             </LayoutStyle>
-        </HomeUI>
+            <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
+                <Button style="gray" width={"345px"} height={"70px"} border={"solid 5px #D9D9D9"} borderRadius={"10px"} fontSize={"40px"}>GAME START</Button>
+            </LayoutStyle>
+        </HomeUI >
     );
 };
 export default RoomPage;

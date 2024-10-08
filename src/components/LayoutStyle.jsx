@@ -2,8 +2,10 @@ import React from "react";
 import styled from "styled-components";
 
 const StyledDiv = styled.div`
-    display: ${(props) => props.$display || 'flex'};
-    flex-direction: ${(props) => props.$flexDirection || 'column'};
+    display: ${(props) => props.$display};
+    flex-direction: ${(props) => props.$flexDirection};
+    width: ${(props) => props.$width};
+    height: ${(props) => props.$height};
     align-items: ${(props) => props.$alignItems};
     justify-content: ${(props) => props.$justifyContent};
     margin-bottom: ${(props) => props.$marginBottom};
@@ -11,15 +13,18 @@ const StyledDiv = styled.div`
     position: ${(props) => props.$position};
     left: ${(props) => props.$left};
     right: ${(props) => props.$right};
+    top: ${(props) => props.$top};
 `;
 
 const LayoutStyle = (props) => {
-    const { display, flexDirection, alignItems, justifyContent, children, marginRight, marginBottom, position, left, right } = props;
+    const { display, flexDirection, width, height, alignItems, justifyContent, children, marginRight, marginBottom, position, left, right, top } = props;
 
     return (
         <StyledDiv
             $display={display}
             $flexDirection={flexDirection}
+            $width={width}
+            $height={height}
             $alignItems={alignItems}
             $justifyContent={justifyContent}
             $marginBottom={marginBottom}
@@ -27,6 +32,7 @@ const LayoutStyle = (props) => {
             $position={position}
             $left={left}
             $right={right}
+            $top={top}
         >
             {children}
         </StyledDiv>
