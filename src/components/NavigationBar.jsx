@@ -62,7 +62,7 @@ const NavigationBar = (props) => {
                     <Link to="/rank"><Rank /></Link>
                     <Link to="/question"><Question /></Link>
                     <Reload />
-                    <Banner><Title>로그인 해주세요.</Title></Banner>
+                    <Banner><Title>{username} 환영합니다</Title></Banner>
                 </NavBar>
                 <Div>
                     <TitleBar />

@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import NavigationBar from "./NavigationBar"
 import styled from "styled-components";
 import gameboy_zoom0 from "../assets/gameboy_zoom0.png";
 import gameboy_zoom2 from "../assets/gameboy_zoom2.png";
 import HomeDisplay from "./HomeDisplay";
+import getMemberRequest from "../services/GetMember";
+import { useEffect } from "react";
 
 const Wrap = styled.div`
     display: flex;
@@ -29,12 +31,31 @@ const Gameboy2 = styled.div`
 `;
 
 const HomeUI = (props) => {
-    const { children, navMode, AddRoom } = props;
+    const { children, navMode, AddRoom} = props;
+    const [member, setMember] = useState('');
+
+    const getMember = async () => {
+        try {
+            const response = await getMemberRequest();
+            console.log("response", response);
+            setMember(response.data);
+            console.log(member);
+        }
+        catch {
+            console.log("서버 에러입니다");
+        }
+    };
+
+    useEffect(() => {
+        getMember();
+    }, []);
+
+
     return (
         <Wrap>
             <Gameboy0 />
             <HomeDisplay>
-                <NavigationBar mode={navMode} AddRoom={AddRoom} />
+                <NavigationBar mode={navMode} username={member.nickName} AddRoom={AddRoom}/>
                 {children}
             </HomeDisplay>
             <Gameboy2 />
