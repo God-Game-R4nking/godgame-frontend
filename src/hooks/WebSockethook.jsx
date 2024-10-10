@@ -62,8 +62,16 @@ const useWebSocket = () => {
     }
   }, [websocketUrl]);
 
-  const sendMessage = useCallback((message) => {
+  const sendMessage = useCallback((requestBody) => {
     if (socket && isConnected) {
+      const message = {
+        memberId : requestBody.memberId,
+        gameRoomId : requestBody.gameRoomId,
+        type : requestBody.type,
+        nickName : requestBody.nickName,
+        content : requestBody.content
+      };
+      console.log("message message ", message);
       socket.send(JSON.stringify(message));
     }
   }, [socket, isConnected]);
