@@ -1,4 +1,4 @@
-import React, { forwardRef } from "react";
+import React from "react";
 import styled from 'styled-components';
 import gameBoy1 from '../assets/gameboy1.png'
 import gameBoy_findpassword from '../assets/gameBoy_findpassword.png'
@@ -49,10 +49,10 @@ export const Display = styled.div`
     text-align: center;
 `;
 
-const StartDisplay = forwardRef((props) => {
+const StartDisplay = (props) => {
     const { children, mode } = props;
 
-    if (mode === "findpassword"){
+    if (mode === "findpassword") {
         return <GameBoy_findpassword>
             <Display>
                 {children}
@@ -71,6 +71,6 @@ const StartDisplay = forwardRef((props) => {
             {children}
         </Display>
     </GameBoy1>
-});
+};
 
 export default StartDisplay;

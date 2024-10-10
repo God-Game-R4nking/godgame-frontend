@@ -137,47 +137,35 @@ const FriendList = styled.div`
 `;
 
 const LobbyPage = () => {
-    const [rooms, setRooms] = useState([]);
+    const [gameRoomResponse, setGameRoomResponse] = useState([]);
     const navigate = useNavigate();
     const member = JSON.parse(getLocalStorage('member'));
 
-    const getGameRooms = async() =>{
+    const getGameRooms = async () => {
         const response = await getGameRoomsRequest();
-
-        console.log("asdasd",response);
+        console.log(response);
+        setGameRoomResponse(response.data);
     }
 
-    const handleAddRoom = async(title) => {
-        const requestBody = {gameRoomName : title , memberId: member.memberId, gameName: "Catchmind"};
+    useEffect(() => {
+        getGameRooms();
+    }, []);
+
+    const handleAddRoom = async (title) => {
+        const requestBody = { gameRoomName: title, memberId: member.memberId, gameName: "Catchmind" };
         const response = await createGame(requestBody);
 
         if (response) {
             const { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds } = response;
-    
+
             navigate("/room", {
                 state: { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds }
             });
         } else {
             console.error("방 생성 실패 또는 에러 처리");
         }
-
-        // useEffect 로 설정해야하는 부분.
-        // setRooms((prevRooms) => [...prevRooms,
-        // <Room
-        //     number={number}
-        //     title={title}
-        //     gameMode={gameMode}
-        //     hostname={hostname}
-        //     headCount={headCount | "1/8"}
-        //     status={status}
-        // />
-        // ]);
     };
 
-    useEffect(() => {
-        getGameRooms();
-
-    }, []);
     return (
         <HomeUI navMode={"lobby"} AddRoom={handleAddRoom}>
             <LayoutStyle display={"flex"} flexDirection={"row"}>
@@ -190,7 +178,20 @@ const LobbyPage = () => {
                         <HeadCount>인원</HeadCount>
                         <Status>상태</Status>
                     </LayoutStyle>
-                    {rooms}
+                    {gameRoomResponse.length > 0 ? (
+                        gameRoomResponse.map((data) => (
+                            <Room
+                                key={data.gameRoomId}
+                                number={data.gameRoomId}
+                                title={data.gameRoomName}
+                                gameMode={data.gameName}
+                                hostname={"방장이름"}
+                                headCount={`${data.currentPopulation}/${data.maxPopulation}`}
+                                status={data.gameRoomStatus}
+                            />
+                        ))) : (
+                        <div>방이 없습니다.</div>
+                    )}
                 </ScrollDiv>
                 <LayoutStyle display={"flex"} flexDirection={"column"}>
                     <MyProfie>

@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import gameBoy from "../assets/gameboy.png";
 import gameBoy0 from "../assets/gameboy0.png";
 import StartDisplay from "./StartDisplay";
@@ -7,6 +7,7 @@ import styled, { keyframes } from 'styled-components';
 import { Title, SubTitle, Content, Content2, ColorText, Presskey } from './Texts';
 import { useNavigate } from "react-router-dom";
 
+// 스타일 컴포넌트 정의
 export const Wrap = styled.div`
     width: 100%;
     height: 100vh;
@@ -45,12 +46,12 @@ export const Fadein = styled.div`
 
     @keyframes fadein {
         0% {
-        opacity: 0;
-        transform: translateY(20px);
+            opacity: 0;
+            transform: translateY(20px);
         }
         100% {
-        opacity: 1;
-        transform: none;
+            opacity: 1;
+            transform: none;
         }
     }
 `;
@@ -69,8 +70,9 @@ export const GameBoyImg = styled.img`
 `;
 
 export const Scene = () => {
-    const natigate = useNavigate();
+    const navigate = useNavigate();
     const [anime, setAnimation] = useState(0);
+    const [timeoutId, setTimeoutId] = useState(null);
 
     const Play = ({ anime }) => {
         if (anime === 0) {
@@ -100,13 +102,33 @@ export const Scene = () => {
         }
     };
 
-    setTimeout(() => {
-        setAnimation(1);
-    }, 4000);
+    useEffect(() => {
+        const id1 = setTimeout(() => {
+            setAnimation(1);
+        }, 4000);
+        
+        const id2 = setTimeout(() => {
+            navigate("/home");
+        }, 6000);
 
-    setTimeout(() => {
-        natigate("/home");
-    }, 6000);
+        setTimeoutId({ id1, id2 });
+
+        // ESC 키 이벤트 핸들러
+        const handleKeyDown = (event) => {
+            if (event.key === 'Escape') {
+                clearTimeout(id1);
+                clearTimeout(id2);
+            }
+        };
+
+        window.addEventListener('keydown', handleKeyDown);
+
+        return () => {
+            clearTimeout(id1);
+            clearTimeout(id2);
+            window.removeEventListener('keydown', handleKeyDown);
+        };
+    }, [navigate]);
 
     return (
         <>
@@ -115,7 +137,7 @@ export const Scene = () => {
     );
 };
 
-const LoadingAnimaion = () => {
+const LoadingAnimation = () => {
     return (
         <Wrap>
             <Scene />
@@ -123,4 +145,4 @@ const LoadingAnimaion = () => {
     );
 }
 
-export default LoadingAnimaion;
+export default LoadingAnimation;
