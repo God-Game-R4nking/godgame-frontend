@@ -4,6 +4,7 @@ import { getLocalStorage } from '../utils/LocalStorageManager';
 // 게시글 한개 가져오기
 const getBoardRequest = async (boardId) => {
     const token = getLocalStorage('token'); // localStorage에서 토큰 가져오기
+    const trimmedToken = token.startsWith('Bearer ') ? token.split(' ')[1] : token;
 
     if (!token) {
         console.error("토큰이 없습니다.");
@@ -14,7 +15,7 @@ const getBoardRequest = async (boardId) => {
         const response = await axios.get(`http://localhost:8080/boards/${boardId}`, {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token // 토큰을 Authorization 헤더에 추가
+                'Authorization': `Bearer ${trimmedToken}`
             },
         });
 

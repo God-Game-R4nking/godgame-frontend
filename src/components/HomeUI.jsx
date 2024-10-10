@@ -1,10 +1,11 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import NavigationBar from "./NavigationBar"
 import styled from "styled-components";
 import gameboy_zoom0 from "../assets/gameboy_zoom0.png";
 import gameboy_zoom2 from "../assets/gameboy_zoom2.png";
 import HomeDisplay from "./HomeDisplay";
 import { getLocalStorage } from "../utils/LocalStorageManager";
+import { useNavigate } from "react-router-dom";
 
 const Wrap = styled.div`
     display: flex;
@@ -31,9 +32,16 @@ const Gameboy2 = styled.div`
 
 const HomeUI = (props) => {
     const { children, navMode, AddRoom, category, gamemode } = props;
+    const navigate = useNavigate();
+
+    useEffect(() => {
+        if (getLocalStorage('member') === null && getLocalStorage('token') === null) {
+            navigate("/");
+        }
+    }, []);
 
     const member = JSON.parse(getLocalStorage('member'));
-    const navi = gamemode ? null : <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
+    const navi = gamemode ? null : <NavigationBar username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
 
     return (
         <Wrap>

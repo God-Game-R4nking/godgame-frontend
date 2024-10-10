@@ -3,6 +3,8 @@ import gameBoy0 from '../assets/gameboy0.png'
 import gameBoy2 from '../assets/gameboy2.png'
 import styled from 'styled-components';
 import Scene from '../components/GameBoyScenes';
+import { getLocalStorage } from '../utils/LocalStorageManager';
+import { useNavigate } from 'react-router-dom';
 
 export const Wrap = styled.div`
     width: 100%;
@@ -44,6 +46,7 @@ const GameBoyPage = () => {
     const [scene, setScene] = useState(0);
     const [mode, setMode] = useState(0);
     const gameboyRef = useRef(null);
+    const navigate = useNavigate();
 
     const handleKeyDown = (e) => {
         switch (scene) {
@@ -150,7 +153,11 @@ const GameBoyPage = () => {
                 break;
         }
     };
-
+    useEffect(() => {
+        if (getLocalStorage('member') !== null && getLocalStorage('token') !== null) {
+            navigate('/home');
+        }
+    }, []);
     // 디버그용 콘솔
     useEffect(() => {
         if (scene === 1) {
