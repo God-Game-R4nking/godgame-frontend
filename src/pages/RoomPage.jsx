@@ -39,7 +39,7 @@ const RoomPage = () => {
     const gameRoomState = state?.gameRoomState;
     const memberIds = state?.memberIds || [];
     const [gameMembers, setGameMembers] = useState([]);
-    const { isConnected, messages, sendMessage } = useWebSocket(`ws://localhost:8080/myHandler`);
+    const { isConnected, messages, sendMessage } = useWebSocket();
 
     const handleGetJoinMember = async () => {
         const requestParam = { memberIds: memberIds };

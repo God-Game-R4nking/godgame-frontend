@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import styled from "styled-components";
 import HomeUI from "../components/HomeUI";
 import Room from "../components/Room";
@@ -9,6 +9,7 @@ import AddRoomModal from "../components/AddRoomModal";
 import { useNavigate } from "react-router-dom";
 import createGame from "../services/Game"
 import { getLocalStorage } from "../utils/LocalStorageManager";
+import getGameRoomsRequest from "../services/GetGameRooms";
 
 export const ScrollDiv = styled.div`
   overflow-y: auto;
@@ -140,8 +141,14 @@ const LobbyPage = () => {
     const navigate = useNavigate();
     const member = JSON.parse(getLocalStorage('member'));
 
+    const getGameRooms = async() =>{
+        const response = await getGameRoomsRequest();
+
+        console.log("asdasd",response);
+    }
+
     const handleAddRoom = async(title) => {
-        const requestBody = {gameRoomName : title , memberId: member.memberId, gameId: 1};
+        const requestBody = {gameRoomName : title , memberId: member.memberId, gameName: "Catchmind"};
         const response = await createGame(requestBody);
 
         if (response) {
@@ -167,6 +174,10 @@ const LobbyPage = () => {
         // ]);
     };
 
+    useEffect(() => {
+        getGameRooms();
+
+    }, []);
     return (
         <HomeUI navMode={"lobby"} AddRoom={handleAddRoom}>
             <LayoutStyle display={"flex"} flexDirection={"row"}>
