@@ -1,25 +1,27 @@
 import axios from 'axios';
-import { getLocalStorage } from '../utils/LocalStorageManager';
+import { getLocalStorage, setLocalStorage } from '../utils/LocalStorageManager';
 
 // 회원 정보 가져오기
 const getMemberRequest = async () => {
-    const token = JSON.parse(getLocalStorage('token')); // localStorage에서 토큰 가져오기
+    const token = getLocalStorage('token'); // localStorage에서 토큰 가져오기
 
     if (!token) {
         console.error("토큰이 없습니다.");
         return;
     }
 
+    console.log(token);
+
     try {
         const response = await axios.get('http://localhost:8080/members/my-info',  {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token // 토큰을 Authorization 헤더에 추가
+                'Authorization': token,
             },
         });
 
         if (response.status === 200) {
-            console.log("회원 정보:", response.data);
+            setLocalStorage('member', JSON.stringify(response.data));
             return response.data;
         }
     } catch (error) {

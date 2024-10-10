@@ -19,7 +19,7 @@ const sendBoardRequest = async (titleString, contentString) => {
         {
             headers: {
                 'Content-Type': 'application/json',
-                'Authorization': token // "Bearer ..." 형태일 경우
+                'Authorization': `Bearer ${token}`,
             },
         });
     return response;

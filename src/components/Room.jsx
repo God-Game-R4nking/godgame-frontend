@@ -12,7 +12,7 @@ const Room = (props) => {
     const member = JSON.parse(getLocalStorage('member'));
 
     const handleOnClick = async() => {
-        
+        console.log(number, memberId);
         const response = await sendGameRoomJoinRequest(number, memberId);
 
         console.log("rerwrerwerwe",response);

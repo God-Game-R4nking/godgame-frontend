@@ -92,8 +92,6 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
     const [userName, setUserName] = useState('');
     const [userPhone, setUserPhone] = useState('');
     const [userJumin, setUserJumin] = useState('');
-    const { fetchMember } = useMember();
-
 
     useEffect(() => {
         if (scene === 2 && signInRefs[0]?.current) {
@@ -128,7 +126,6 @@ const Scene = ({ scene, mode, setScene, gameboyRef }) => {
         try {
             const response = await sendLoginRequest(id, password);
             if (response) {
-                await fetchMember(); // 로그인 성공 시 멤버 정보 가져오기
                 navigate("/loading");
             } else {
                 // 로그인 실패 처리

@@ -1,7 +1,7 @@
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
 import Swal from "sweetalert2";
-import { setLocalStorage } from "../utils/LocalStorageManager";
+import { setLocalStorageToken } from "../utils/LocalStorageManager";
 
 const sendLoginRequest = async (idInput, passwordInput) => {
     try {
@@ -19,7 +19,7 @@ const sendLoginRequest = async (idInput, passwordInput) => {
         if (response.status === 200) {
             console.log('로그인 성공', response);
             const token = response.headers.authorization;
-            setLocalStorage('token', token);
+            setLocalStorageToken('token', token);
             return response;
         } else {
             Swal.fire({ text: `요청 실패(${response.status})` });

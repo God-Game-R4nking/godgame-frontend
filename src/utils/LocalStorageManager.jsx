@@ -1,3 +1,7 @@
+export const setLocalStorageToken = (name, data) => {
+    localStorage.setItem(name, data)
+}
+
 export const setLocalStorage = (name, data) => {
     localStorage.setItem(name, JSON.stringify(data))
 }
