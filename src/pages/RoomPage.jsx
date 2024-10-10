@@ -118,7 +118,14 @@ const RoomPage = () => {
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
-                <Button style="gray" width={"345px"} height={"70px"} border={"solid 5px #D9D9D9"} borderRadius={"10px"} fontSize={"40px"} onClick={handleGameStart}>
+                <Button
+                    style="gray"
+                    width={"345px"}
+                    height={"70px"}
+                    border={"solid 5px #D9D9D9"}
+                    borderRadius={"10px"}
+                    fontSize={"40px"}
+                    onClick={handleGameStart}>
                     GAME START
                 </Button>
             </LayoutStyle>

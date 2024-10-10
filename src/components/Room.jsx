@@ -45,7 +45,6 @@ const Room = (props) => {
         }
     }
 
-
     return (
         <div onClick={handleOnClick}>
             <LayoutStyle display={"flex"} flexDirection={"row"}>

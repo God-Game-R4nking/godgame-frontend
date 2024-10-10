@@ -3,6 +3,9 @@ import styled from "styled-components";
 import HomeUI from "../components/HomeUI";
 import Input from "../components/Input";
 import sendBoardRequest from '../services/PostBoard';
+import { useLocation, useNavigate } from "react-router-dom";
+import { getLocalStorage } from "../utils/LocalStorageManager";
+import { connect } from "socket.io-client";
 
 const Container = styled.div`
     display: flex;
@@ -73,17 +76,17 @@ const SubmitButton = styled.button`
 export const Write = () => {
     const titleRef = useRef(null);
     const contentRef = useRef(null);
-
+    const navigate = useNavigate();
     const handleWrite = async () => {
         const title = titleRef.current.value;
         const content = contentRef.current.value;
         const response = await sendBoardRequest(title, content);
         if (response.status === 201) {
             alert("게시글 등록이 완료되었습니다.");
+            navigate('/board');
         } else if (response.status === 409) {
             alert("이미 있는 게시글입니다");
         }
-    
     }
 
     return (
@@ -99,7 +102,7 @@ export const Write = () => {
                     <ContentInput
                         placeholder={"내용을 입력해주세요."}
                         ref={contentRef}
-                        ></ContentInput>
+                    ></ContentInput>
                     <SubmitButton onClick={handleWrite}>등록</SubmitButton>
                 </ContentContainer>
             </Container>
@@ -108,6 +111,19 @@ export const Write = () => {
 }
 
 export const Edit = () => {
+    const location = useLocation();
+    const state = location.state;
+
+    const titleRef = useRef(null);
+    const contentRef = useRef(null);
+
+    const data = JSON.parse(getLocalStorage('member'));
+    const memberData = JSON.parse(data);
+
+    const title = state?.title;
+    const content = state?.content;
+    const memberId = memberData.data.memberId;
+
     const handleEdit = () => {
 
     }
@@ -117,10 +133,18 @@ export const Edit = () => {
             <Container>
                 <ContentContainer>
                     <Title>제목</Title>
-                    <TitleInput placeholder={"제목을 입력해주세요."}></TitleInput>
+                    <TitleInput
+                        ref={titleRef}
+                        defaultValue={title}
+                    ></TitleInput>
                     <Title>내용</Title>
-                    <ContentInput placeholder={"내용을 입력해주세요."}></ContentInput>
-                    <SubmitButton onClick={handleEdit}>등록</SubmitButton>
+                    <ContentInput
+                        ref={contentRef}
+                        defaultValue={content}
+                    ></ContentInput>
+                    <SubmitButton
+                        onClick={handleEdit}
+                    >등록</SubmitButton>
                 </ContentContainer>
             </Container>
         </HomeUI>

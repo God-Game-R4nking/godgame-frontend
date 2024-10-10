@@ -19,7 +19,7 @@ const Info = styled.div`
 const Author = styled.div`
     display: flex;
     flex-direction: row;
-    font-size: 25px;
+    font-size: 20px;
     align-items: center;
 `
 
@@ -29,7 +29,7 @@ const DateTime = styled.div`
 `
 
 const Content = styled.div`
-    font-size: 15px;
+    font-size: 18px;
     margin-top: 10px;
     min-width: min-content;
     max-width: max-content;

@@ -23,7 +23,7 @@ const App = () => {
           <Route path='/lobby' element={<LobbyPage />} />
           <Route path='/notification' element={<NotificationPage />} />
           <Route path='/board' element={<BoardPage />} />
-          <Route path='/board/1' element={<PostDetailPage />} />
+          <Route path='/board/:id' element={<PostDetailPage />} />
           <Route path='/board/write' element={<Write />} />
           <Route path='/board/edit' element={<Edit />} />
           <Route path='/community' element={<CommunityPage />} />
