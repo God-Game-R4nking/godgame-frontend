@@ -2,6 +2,7 @@ import React, { useRef, useState, useEffect } from "react";
 import styled from "styled-components";
 import useWebSocket from "../hooks/WebSockethook";
 
+
 const Container = styled.div`
     height: 410px;
     width: 335px;
@@ -10,8 +11,7 @@ const Container = styled.div`
     margin: 10px;
     margin-right: 10px;
     border-radius: 10px;
-    `
-;
+`;
 
 const ScrollDiv = styled.div`
     overflow-y: auto;
@@ -68,23 +68,20 @@ const InputContainer = styled.div`
     position: relative;
     bottom: 2px;
     left: 5px;
-    `
-;
+    `;
 
 const ButtonContainer = styled.div`
     position: relative;
     bottom: 43.5px;
     left: 245px;
     cursor: pointer;
-    `
-;
+    `;
 
 const Chat = styled.div`
     padding-left: 15px;
     padding-right: 10px;
     padding-bottom: 10px;
-    `
-;
+    `;
 
 const Chating = ({ memberId, gameRoomId, nickName }) => {
     const inputRef = useRef(null);

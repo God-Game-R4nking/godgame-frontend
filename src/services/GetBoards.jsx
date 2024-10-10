@@ -7,10 +7,7 @@ const getBoardsRequest = async (page, size) => {
             'Content-Type': 'application/json',
         },
     });
-
-    console.log("aszdasd : ");
-    console.log(response.data);
-    return response.data;
+    return response;
 };
 
 export default getBoardsRequest;

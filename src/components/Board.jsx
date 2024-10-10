@@ -15,7 +15,7 @@ const Search = styled.div`
     display: flex;
     flex-direction: row-reverse;
     position: relative;
-    top: 40px;
+    top: 30px;
     right: 2px;
     height: 16.55%;
     width: 100%;
@@ -24,15 +24,6 @@ const Search = styled.div`
 const Content = styled.div`
     height: 73.42%;
 `
-
-const BottomContent = styled.div`
-    display: flex;
-    flex-direction: row;
-    height: 10.03%;
-    align-items: center;
-    justify-content: center;
-    margin-bottom: 10px;
-`;
 
 const SearchButton = styled.button`
     background-image: url(${ic_search});
@@ -71,30 +62,6 @@ const WriteButton = styled.button`
     }
 `;
 
-const DirectionButton = styled.button`
-    border: none;
-    width: 50px;
-    height: 40px;
-    background-color: #d9d9d9;
-    font-size: 35px;
-    font-family: "Goblin One", serif;
-    font-weight: 400;
-    font-style: normal;
-
-    &:hover {
-        background-color: rgb(227, 227, 227); /* 호버 시 색상 변경 */
-    }
-
-    &:active {
-        transform: scale(0.95); /* 클릭 시 버튼 크기 축소 */
-        background-color: rgb(140, 140, 140); /* 클릭 시 색상 변경 */
-    }
-`;
-
-const IndexText = styled.div`
-    font-size: 30px;
-    margin: 15px;
-`;
 
 const Table = styled.table`
     width: 100%;
@@ -115,36 +82,7 @@ export const TdLeft = styled.td`
 `
 
 const Board = (props) => {
-    const [index, setIndex] = useState(1);
-    const [maxIndex, setMaxIndex] = useState(1);
     const navigate = useNavigate();
-
-    // TODO : PageInfo에서 maxIndex에 대한 로직 필요
-    const handleLeft = () => {
-        if (index === 1) {
-            setIndex(1);
-        } else {
-            setIndex(index - 1);
-        }
-    };
-
-    const handleRight = () => {
-        if (index === maxIndex) {
-            setIndex(index);
-        } else {
-            setIndex(index + 1);
-        }
-    };
-
-    const Index = () => {
-        return (
-            <BottomContent>
-                <DirectionButton onClick={handleLeft}>{"<"}</DirectionButton>
-                <IndexText>{index}</IndexText>
-                <DirectionButton onClick={handleRight}>{">"}</DirectionButton>
-            </BottomContent>
-        );
-    }
 
     return (
         <Container>
@@ -184,7 +122,6 @@ const Board = (props) => {
                     </tbody>
                 </Table>
             </Content>
-            <Index></Index>
         </Container>
     );
 }
