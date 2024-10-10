@@ -10,8 +10,6 @@ const getMemberRequest = async () => {
         return;
     }
 
-    console.log(token);
-
     try {
         const response = await axios.get('http://localhost:8080/members/my-info',  {
             headers: {
