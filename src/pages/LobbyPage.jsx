@@ -140,11 +140,16 @@ const LobbyPage = () => {
     const [gameRoomResponse, setGameRoomResponse] = useState([]);
     const navigate = useNavigate();
     const member = JSON.parse(getLocalStorage('member'));
+    const jsonMember = JSON.parse(member);
+
+    console.log(JSON.parse(member));
 
     const getGameRooms = async () => {
         const response = await getGameRoomsRequest();
         console.log(response);
+        if(response){
         setGameRoomResponse(response.data);
+        }
     }
 
     useEffect(() => {
@@ -152,14 +157,14 @@ const LobbyPage = () => {
     }, []);
 
     const handleAddRoom = async (title) => {
-        const requestBody = { gameRoomName: title, memberId: member.memberId, gameName: "Catchmind" };
+        const requestBody = { gameRoomName: title, memberId: jsonMember.memberId, gameName: "Catchmind", maxPopulation: 8};
         const response = await createGame(requestBody);
 
         if (response) {
-            const { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds } = response;
+            const { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds, roomManagerName } = response;
 
             navigate("/room", {
-                state: { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds }
+                state: { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds, roomManagerName }
             });
         } else {
             console.error("방 생성 실패 또는 에러 처리");
@@ -185,11 +190,13 @@ const LobbyPage = () => {
                                 number={data.gameRoomId}
                                 title={data.gameRoomName}
                                 gameMode={data.gameName}
-                                hostname={"방장이름"}
+                                hostname={data.roomManagerName}
                                 headCount={`${data.currentPopulation}/${data.maxPopulation}`}
                                 status={data.gameRoomStatus}
+                                memberId= {jsonMember.memberId}
                             />
-                        ))) : (
+                        ))
+                    ) : (
                         <div>방이 없습니다.</div>
                     )}
                 </ScrollDiv>

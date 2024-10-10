@@ -40,9 +40,8 @@ const HomeUI = (props) => {
         }
     }, []);
 
-    const member = getLocalStorage('member');
-
-    const navi = gamemode ? null : <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
+    const member = JSON.parse(getLocalStorage('member'));
+    const navi = gamemode ? null : <NavigationBar username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
 
     return (
         <Wrap>
