@@ -59,6 +59,7 @@ export const Room = styled.button`
     border: none;
     width: 100px;
     height: 100px;
+    margin-left: 1px;
     margin-right: 1px;
     &:hover {
         background-color: rgb(160, 160, 160); /* 호버 시 색상 변경 */
@@ -202,7 +203,7 @@ export const MyPage = styled.div`
     text-align: center;
 `;
 
-export const Banner = styled.div`
+export const Banner = styled.button`
     background-color: #BBBBBB;
     border: none;
     height: 100px;
@@ -213,6 +214,15 @@ export const Banner = styled.div`
     justify-content: center;
     align-items: center; /* 내용 중앙 정렬 */
     text-align: center;
+    font-size: 30px;
+    &:hover {
+        background-color: rgb(160, 160, 160); /* 호버 시 색상 변경 */
+    }
+
+    &:active {
+        transform: scale(0.95); /* 클릭 시 버튼 크기 축소 */
+        background-color: rgb(119, 119, 119); /* 클릭 시 색상 변경 */
+    }
 `;
 
 export const Setting = styled.button`

@@ -6,7 +6,7 @@ import LayoutStyle from "../components/LayoutStyle";
 import MyProfie from "../components/MyProfile";
 import { Content3 } from "../components/Texts";
 import AddRoomModal from "../components/AddRoomModal";
-import { useNavigate } from "react-router-dom";
+import { json, useNavigate } from "react-router-dom";
 import createGame from "../services/Game"
 import { getLocalStorage } from "../utils/LocalStorageManager";
 import getGameRoomsRequest from "../services/GetGameRooms";
@@ -142,11 +142,8 @@ const LobbyPage = () => {
     const member = JSON.parse(getLocalStorage('member'));
     const jsonMember = JSON.parse(member);
 
-    console.log(JSON.parse(member));
-
     const getGameRooms = async () => {
         const response = await getGameRoomsRequest();
-        console.log(response);
         if(response){
         setGameRoomResponse(response.data);
         }
@@ -157,7 +154,7 @@ const LobbyPage = () => {
     }, []);
 
     const handleAddRoom = async (title) => {
-        const requestBody = { gameRoomName: title, memberId: jsonMember.memberId, gameName: "Catchmind", maxPopulation: 8};
+        const requestBody = { gameRoomName: title, memberId: jsonMember.data.memberId, gameName: "Catchmind", maxPopulation: 8};
         const response = await createGame(requestBody);
 
         if (response) {
@@ -172,7 +169,7 @@ const LobbyPage = () => {
     };
 
     return (
-        <HomeUI navMode={"lobby"} AddRoom={handleAddRoom}>
+        <HomeUI navMode={"lobby"} AddRoom={handleAddRoom} category={"게임 대기실"}>
             <LayoutStyle display={"flex"} flexDirection={"row"}>
                 <ScrollDiv>
                     <LayoutStyle display={"flex"} flexDirection={"row"}>
@@ -193,7 +190,7 @@ const LobbyPage = () => {
                                 hostname={data.roomManagerName}
                                 headCount={`${data.currentPopulation}/${data.maxPopulation}`}
                                 status={data.gameRoomStatus}
-                                memberId= {jsonMember.memberId}
+                                memberId= {jsonMember.data.memberId}
                             />
                         ))
                     ) : (

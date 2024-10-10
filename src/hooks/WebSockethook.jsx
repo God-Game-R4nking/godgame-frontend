@@ -6,7 +6,7 @@ const useWebSocket = () => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
-  const token = JSON.parse(getLocalStorage('token')); // 로컬 스토리지에서 토큰 가져오기
+  const token = getLocalStorage('token'); // 로컬 스토리지에서 토큰 가져오기
   const [websocketUrl, setWebsocketUrl] = useState(null);
   const [userId, setUserId] = useState();
 

@@ -12,8 +12,8 @@ export const useMember = () => {
       try {
         setLoading(true);
         const response = await getMemberRequest();
-        setMember(response.data);
         setLocalStorage('member', JSON.stringify(response.data));
+        setMember(response.data);
         setLoading(false);
       } catch (err) {
         setError("서버 에러입니다");
