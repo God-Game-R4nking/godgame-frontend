@@ -9,6 +9,7 @@ import Button from "../components/Button";
 import getMemberListRequest from "../services/GetMemberList";
 import useWebSocket from "../hooks/WebSockethook";
 import getGameRoomRequest from "../services/GetGameRoom";
+import { getLocalStorage } from "../utils/LocalStorageManager";
 
 
 const InfoBar = styled.div`
@@ -41,7 +42,8 @@ const RoomPage = () => {
     const [memberIds, setMemberIds] = useState(state?.memberIds || []);
     const [gameMembers, setGameMembers] = useState([]);
     const { isConnected, messages, sendMessage } = useWebSocket();
-    const prevMemberIdsRef = useRef(memberIds); // 이전 memberIds 상태를 저장
+    const member = JSON.parse(JSON.parse(getLocalStorage('member')));
+
 
     const handleGetJoinMember = async () => {
         const requestParam = { memberIds: memberIds };
@@ -75,7 +77,9 @@ const RoomPage = () => {
     useEffect(() => {
         if (isConnected) {
             console.log("WebSocket connected!");
-            sendMessage({ type: "JOIN_GAME" });
+            console.log("memberID", member)
+            sendMessage({ type: "JOIN_GAME", gameRoomId: gameRoomId, nickName : member.data.nickName,  memberId : member.data.memberId , content : "게임 입장" });
+            
         }
     }, [isConnected]);
 
@@ -83,7 +87,7 @@ const RoomPage = () => {
         // 새 메시지가 도착했을 때의 처리
         if (messages.length > 0) {
             const latestMessage = messages[messages.length - 1];
-            console.log("New message:", latestMessage);
+            // console.log("New message:", latestMessage);
             // 여기에서 메시지 타입에 따른 처리를 할 수 있습니다.
             if (latestMessage.type === "JOIN_GAME") {
                 handleGetGameRoom();
@@ -93,7 +97,7 @@ const RoomPage = () => {
     }, [messages]);
 
     const handleGameStart = () => {
-        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId });
+        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName : member.data.nickName, memberId : member.data.memberId , content : "게임 시작" });
     };
 
     return (
@@ -114,7 +118,7 @@ const RoomPage = () => {
                     </LayoutStyle>
                 </LayoutStyle>
                 <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
-                    <Chating></Chating>
+                    <Chating gameRoomId = {gameRoomId} memberId = {member.data.memberId} nickName = {member.data.nickName}></Chating>
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
