@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useRef } from "react";
 import styled from "styled-components";
 import HomeUI from "../components/HomeUI";
 import { useLocation } from "react-router-dom";
@@ -8,6 +8,7 @@ import Chating from "../components/Chating";
 import Button from "../components/Button";
 import getMemberListRequest from "../services/GetMemberList";
 import useWebSocket from "../hooks/WebSockethook";
+import getGameRoomRequest from "../services/GetGameRoom";
 
 
 const InfoBar = styled.div`
@@ -31,15 +32,16 @@ const RoomPage = () => {
     const location = useLocation();
     const state = location.state;
 
-    const gameRoomId = state?.gameRoomId || 0;  // 기본값 0
-    const gameId = state?.gameId || 0;          // 기본값 0
-    const gameRoomName = state?.gameRoomName || "노영준 들어와!";  // 기본값 "노영준 들어와!"
-    const currentPopulation = state?.currentPopulation || 0;  // 기본값 0
-    const maxPopulation = state?.maxPopulation || 0;          // 기본값 0
+    const gameRoomId = state?.gameRoomId || 0;
+    const gameId = state?.gameId || 0;
+    const gameRoomName = state?.gameRoomName || "노영준 들어와!";
+    const [currentPopulation, setCurrentPopulation] = useState(state?.currentPopulation || 0);
+    const maxPopulation = state?.maxPopulation || 0;
     const gameRoomState = state?.gameRoomState;
-    const memberIds = state?.memberIds || [];
+    const [memberIds, setMemberIds] = useState(state?.memberIds || []);
     const [gameMembers, setGameMembers] = useState([]);
     const { isConnected, messages, sendMessage } = useWebSocket();
+    const prevMemberIdsRef = useRef(memberIds); // 이전 memberIds 상태를 저장
 
     const handleGetJoinMember = async () => {
         const requestParam = { memberIds: memberIds };
@@ -55,17 +57,25 @@ const RoomPage = () => {
             console.error("Unexpected response format:", response);
             alert("멤버 정보를 불러오는 데 실패했습니다.");
         }
-        
     };
 
+    const handleGetGameRoom = async () => {
+        const response = await getGameRoomRequest(gameRoomId);
+        console.log("response23123", response.data);
+        if (response) {
+            setMemberIds(response.data.memberIds);
+        }
+    }
+
     useEffect(() => {
+        handleGetGameRoom();
         handleGetJoinMember();
-    }, [memberIds]);
+    }, [messages]);
 
     useEffect(() => {
         if (isConnected) {
             console.log("WebSocket connected!");
-            // 연결 후 초기 메시지 전송 등의 작업을 수행할 수 있습니다.
+            sendMessage({ type: "JOIN_GAME" });
         }
     }, [isConnected]);
 
@@ -75,11 +85,14 @@ const RoomPage = () => {
             const latestMessage = messages[messages.length - 1];
             console.log("New message:", latestMessage);
             // 여기에서 메시지 타입에 따른 처리를 할 수 있습니다.
+            if (latestMessage.type === "JOIN_GAME") {
+                handleGetGameRoom();
+                handleGetJoinMember();
+            }
         }
     }, [messages]);
 
     const handleGameStart = () => {
-        // 게임 시작 메시지 전송
         sendMessage({ type: "GAME_START", gameRoomId: gameRoomId });
     };
 
@@ -105,9 +118,12 @@ const RoomPage = () => {
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
-                <Button style="gray" width={"345px"} height={"70px"} border={"solid 5px #D9D9D9"} borderRadius={"10px"} fontSize={"40px"}>GAME START</Button>
+                <Button style="gray" width={"345px"} height={"70px"} border={"solid 5px #D9D9D9"} borderRadius={"10px"} fontSize={"40px"} onClick={handleGameStart}>
+                    GAME START
+                </Button>
             </LayoutStyle>
-        </HomeUI >
+        </HomeUI>
     );
 };
+
 export default RoomPage;

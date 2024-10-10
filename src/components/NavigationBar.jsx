@@ -22,8 +22,8 @@ const Div = styled.div`
 `;
 
 const NavigationBar = (props) => {
-    const { mode, username, AddRoom, category } = props
-
+    const { mode, username, AddRoom, category } = props;
+    
     if (mode === 'lobby') {
         return (
             <Nav>

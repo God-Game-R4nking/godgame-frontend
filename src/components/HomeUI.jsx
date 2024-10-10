@@ -32,7 +32,7 @@ const Gameboy2 = styled.div`
 const HomeUI = (props) => {
     const { children, navMode, AddRoom, category, gamemode } = props;
 
-    const member = getLocalStorage('member');
+    const member = JSON.parse(getLocalStorage('member'));
     const navi = gamemode ? null : <NavigationBar mode={navMode} username={JSON.parse(member)} AddRoom={AddRoom} category={category} />;
 
     return (
