@@ -28,8 +28,7 @@ const ScrollDiv = styled.div`
         border-radius: 2px;
         background: #ccc;
     }
-        `
-;
+`;
 
 const Input = styled.input`
     width: 310px;
@@ -39,8 +38,9 @@ const Input = styled.input`
     background-color: #808080;
     border: none;
     padding-left: 10px;
-    `
-;
+    font-size: 20px;
+    color: white;
+`;
 
 const Button = styled.div`
     background-color: #d9d9d9;
@@ -68,20 +68,20 @@ const InputContainer = styled.div`
     position: relative;
     bottom: 2px;
     left: 5px;
-    `;
+`;
 
 const ButtonContainer = styled.div`
     position: relative;
     bottom: 43.5px;
     left: 245px;
     cursor: pointer;
-    `;
+`;
 
 const Chat = styled.div`
     padding-left: 15px;
     padding-right: 10px;
     padding-bottom: 10px;
-    `;
+`;
 
 const Chating = ({ memberId, gameRoomId, nickName }) => {
     const inputRef = useRef(null);

@@ -6,6 +6,7 @@ import sendBoardRequest from '../services/PostBoard';
 import { useLocation, useNavigate } from "react-router-dom";
 import { getLocalStorage } from "../utils/LocalStorageManager";
 import { connect } from "socket.io-client";
+import sendBoardPatchRequest from "../services/PatchBoard";
 
 const Container = styled.div`
     display: flex;
@@ -111,6 +112,7 @@ export const Write = () => {
 }
 
 export const Edit = () => {
+    const navigate = useNavigate();
     const location = useLocation();
     const state = location.state;
 
@@ -122,10 +124,16 @@ export const Edit = () => {
 
     const title = state?.title;
     const content = state?.content;
-    const memberId = memberData.data.memberId;
+    const boardId = state?.boardId;
 
-    const handleEdit = () => {
-
+    const Patch = async () => {
+        const title = titleRef.current.value;
+        const content = contentRef.current.value;
+        const response = await sendBoardPatchRequest(boardId, title, content);
+        console.log(response);
+        if (response.status === 200) alert("게시글 수정이 완료되었습니다.");
+        if (response.status === 409) alert("잘못된 접근입니다.");
+        navigate(`/board/${boardId}`);
     }
 
     return (
@@ -143,7 +151,7 @@ export const Edit = () => {
                         defaultValue={content}
                     ></ContentInput>
                     <SubmitButton
-                        onClick={handleEdit}
+                        onClick={() => Patch()}
                     >등록</SubmitButton>
                 </ContentContainer>
             </Container>

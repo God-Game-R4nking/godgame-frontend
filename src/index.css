@@ -13,7 +13,7 @@ body {
   -webkit-user-select:none;
   -moz-user-select:none;
   -ms-user-select:none;
-  user-select:none
+  user-select:none;
 }
 
 code {
@@ -29,6 +29,7 @@ code {
 
 * {
   font-family: 'Pixel';
+  cursor: url("./assets/ic_drawing_cursor.png") 12 0, auto;
 }
 
 .gameboy {

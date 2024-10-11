@@ -71,7 +71,7 @@ const ModalContent = styled.div`
     flex-direction: column;
     align-items: center;
     padding: 20px;
-`
+`;
 
 const AddRoomModal = ({ ButtonStyle, AddRoom }) => {
     const [isOpen, setIsOpen] = useState(false);
