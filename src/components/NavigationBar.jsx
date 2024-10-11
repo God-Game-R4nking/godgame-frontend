@@ -75,7 +75,7 @@ const NavigationBar = (props) => {
                     <Link to="/board"><Board /></Link>
                     <Link to="/community"><Community /></Link>
                     <Link to="/rank"><Rank /></Link>
-                    <a href="https://github.com/God-Game-R4nking"><Question /></a>
+                    <a href="https://github.com/God-Game-R4nking" target="_blank"><Question /></a>
                     <Reload
                         onClick={() => window.location.reload()} />
                     <Banner
