@@ -7,6 +7,8 @@ import HomeDisplay from "./HomeDisplay";
 import { getLocalStorage } from "../utils/LocalStorageManager";
 import { useNavigate } from "react-router-dom";
 import getMemberRequest from "../services/GetMember";
+import gameboy_gamemode1 from "../assets/gameboy_gamemode1.png";
+import gameboy_gamemode4 from "../assets/gameboy_gamemode4.png";
 
 const Wrap = styled.div`
     display: flex;
@@ -28,6 +30,22 @@ const Gameboy2 = styled.div`
     background-repeat: no-repeat;
     width: 1440px;
     height: 217px;
+`;
+
+const Gameboy_Gamemode1 = styled.div`
+     background-image: url(${gameboy_gamemode1});
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 1800px;
+    height: 60px;
+`;
+
+const Gameboy_Gamemode4 = styled.div`
+     background-image: url(${gameboy_gamemode4});
+    background-size: cover;
+    background-repeat: no-repeat;
+    width: 1800px;
+    height: 177px;
 `;
 
 const HomeUI = (props) => {
@@ -55,19 +73,32 @@ const HomeUI = (props) => {
             username={member ? member.data.nickName : ""}
             AddRoom={AddRoom}
             category={category}
-            handleLeave = {handleLeave}
+            handleLeave={handleLeave}
         />
     );
 
     return (
-        <Wrap>
-            <Gameboy0 />
-            <HomeDisplay>
-                {navi}
-                {children}
-            </HomeDisplay>
-            <Gameboy2 />
-        </Wrap>
+        <>
+            {gamemode ?
+                <Wrap>
+                    < Gameboy_Gamemode1 />
+                    <HomeDisplay gamemode={true}>
+                        {navi}
+                        {children}
+                    </HomeDisplay>
+                    <Gameboy_Gamemode4 />
+                </Wrap >
+                :
+                <Wrap>
+                    <Gameboy0 />
+                    <HomeDisplay>
+                        {navi}
+                        {children}
+                    </HomeDisplay>
+                    <Gameboy2 />
+                </Wrap>
+            }
+        </>
     );
 }
 

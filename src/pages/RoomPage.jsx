@@ -11,6 +11,7 @@ import useWebSocket from "../hooks/WebSockethook";
 import getGameRoomRequest from "../services/GetGameRoom";
 import { getLocalStorage } from "../utils/LocalStorageManager";
 import sendGameRoomLeaveRequest from "../services/PostGameRoomLeave";
+import DrawingPage from "./DrawingPage";
 
 
 const InfoBar = styled.div`
@@ -44,6 +45,7 @@ const RoomPage = () => {
     const [gameMembers, setGameMembers] = useState([]);
     const { isConnected, messages, sendMessage } = useWebSocket();
     const member = JSON.parse(JSON.parse(getLocalStorage('member')));
+    const [gameStart, setGameStart] = useState(false);
 
 
     const handleGetJoinMember = async () => {
@@ -98,22 +100,22 @@ const RoomPage = () => {
     }, [messages]);
 
     const handleGameStart = () => {
-        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName: member.data.nickName, memberId: member.data.memberId, content: "게임 시작" });
+        setGameStart(true);
     };
 
     const leaveGame = async () => {
         const isConfirmed = window.confirm("정말로 게임을 나가시겠습니까?");
-        
+
         if (isConfirmed) {
             const response = await sendGameRoomLeaveRequest(gameRoomId, member.data.memberId);
 
             if (response) {
-                sendMessage({ 
-                    type: "LEAVE_GAME", 
-                    gameRoomId: gameRoomId, 
-                    nickName: member.data.nickName, 
-                    memberId: member.data.memberId, 
-                    content: `${member.data.nickName}님이 게임을 떠났습니다` 
+                sendMessage({
+                    type: "LEAVE_GAME",
+                    gameRoomId: gameRoomId,
+                    nickName: member.data.nickName,
+                    memberId: member.data.memberId,
+                    content: `${member.data.nickName}님이 게임을 떠났습니다`
                 });
             }
         }
@@ -125,11 +127,11 @@ const RoomPage = () => {
     //     const preventBackNavigation = () => {
     //         window.history.pushState(null, '', window.location.href);
     //     };
-    
+
     //     // 현재 상태를 저장하고 뒤로 가기를 방지합니다.
     //     window.history.pushState(null, '', window.location.href);
     //     window.addEventListener('popstate', preventBackNavigation);
-    
+
     //     // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거합니다.
     //     return () => {
     //         window.removeEventListener('popstate', preventBackNavigation);
@@ -137,39 +139,48 @@ const RoomPage = () => {
     // }, []);
 
     return (
-        <HomeUI navMode={"room"} handleLeave = {leaveGame}>
-            <LayoutStyle display={"flex"} flexDirection={"row"} width={"100%"} height={"100%"}>
-                <LayoutStyle display={"flex"} flexDirection={"column"} width={"70%"} height={"100%"}>
-                    <InfoBar>
-                        <div>&nbsp;&nbsp;{gameRoomId}</div>
-                        <div>{gameRoomName}</div>
-                        <div>{currentPopulation + "/" + maxPopulation}&nbsp;&nbsp;</div>
-                    </InfoBar>
-                    <LayoutStyle display={"flex"} width={"100%"}>
-                        <UserList>
-                            {gameMembers.map((member, index) => (
-                                <UserProfileInRoom key={member.id || index} nickname={member.nickName} />
-                            ))}
-                        </UserList>
-                    </LayoutStyle>
-                </LayoutStyle>
-                <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
-                    <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName} messages={messages} sendMessage={sendMessage}></Chating>
-                </LayoutStyle>
-            </LayoutStyle>
-            <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
-                <Button
-                    style="gray"
-                    width={"345px"}
-                    height={"70px"}
-                    border={"solid 5px #D9D9D9"}
-                    borderRadius={"10px"}
-                    fontSize={"40px"}
-                    onClick={handleGameStart}>
-                    GAME START
-                </Button>
-            </LayoutStyle>
-        </HomeUI>
+        <>
+            {
+                gameStart ?
+                    <>
+                        < DrawingPage ></DrawingPage >
+                    </>
+                    :
+                    <HomeUI navMode={"room"} handleLeave={leaveGame}>
+                        <LayoutStyle display={"flex"} flexDirection={"row"} width={"100%"} height={"100%"}>
+                            <LayoutStyle display={"flex"} flexDirection={"column"} width={"70%"} height={"100%"}>
+                                <InfoBar>
+                                    <div>&nbsp;&nbsp;{gameRoomId}</div>
+                                    <div>{gameRoomName}</div>
+                                    <div>{currentPopulation + "/" + maxPopulation}&nbsp;&nbsp;</div>
+                                </InfoBar>
+                                <LayoutStyle display={"flex"} width={"100%"}>
+                                    <UserList>
+                                        {gameMembers.map((member, index) => (
+                                            <UserProfileInRoom key={member.id || index} nickname={member.nickName} />
+                                        ))}
+                                    </UserList>
+                                </LayoutStyle>
+                            </LayoutStyle>
+                            <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
+                                <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName}></Chating>
+                            </LayoutStyle>
+                        </LayoutStyle>
+                        <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
+                            <Button
+                                style="gray"
+                                width={"345px"}
+                                height={"70px"}
+                                border={"solid 5px #D9D9D9"}
+                                borderRadius={"10px"}
+                                fontSize={"40px"}
+                                onClick={handleGameStart}>
+                                GAME START
+                            </Button>
+                        </LayoutStyle>
+                    </HomeUI>
+            }
+        </>
     );
 };
 
