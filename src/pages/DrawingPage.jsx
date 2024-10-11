@@ -18,23 +18,31 @@ const Container = styled.div`
 const UserContainerL = styled.div`
     display: flex;
     flex-direction: column;
+    align-items: start;
+    width: 450px;
+    padding-left: 15px;
     height: 100%;
-    width: 100%;
-    align-items: center;
 `;
 
 const UserContainerR = styled.div`
     display: flex;
     flex-direction: column;
-    align-items: center;
-    width: 100%;
+    align-items: end;
+    padding-right: 15px;
+    width: 450px;
     height: 100%;
+`;
+
+const UserContainer = styled.div`
+    display: flex;
+    flex-direction: row;
+    align-items: end;
 `;
 
 const DrawingAppContainer = styled.div`
     display: flex;
     flex-direction: column;
-    width: 100%;
+    width: 700px;
     height: 100%;
 `;
 
@@ -74,6 +82,8 @@ const Button = styled.div`
 
 const InputContainer = styled.div`
     margin-top: 10px;
+    position: relative;
+    left: 43px;
 `;
 
 const ButtonContainer = styled.div`
@@ -83,9 +93,13 @@ const ButtonContainer = styled.div`
     cursor: pointer;
 `;
 
+const ChatWrap = styled.div`
+    width: 20%;
+`;
+
 const ChatContainer = styled.div`
   position: relative;
-  display: inline-block;
+  display: inline;
   margin: 20px;
 `;
 
@@ -98,6 +112,7 @@ const Chat = styled.div`
   font-size: 16px;
   box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
   color: white; /* 글자 색상 변경 */
+  padding: 20px;
 `;
 
 const RightChat = styled(Chat)`
@@ -145,10 +160,30 @@ const DrawingPage = () => {
             <Container>
                 <UserContainerL>
                     {/* display => 사람 없으면 none 처리해서 안보이게 만듬. */}
-                    <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"2"}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"3"}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"4"}></UserProfileInRoom>
+                    <UserContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                        <ChatContainer>
+                            <LeftChat>asdasdasdsadasdasdasdsadasdasdasdsad</LeftChat>
+                        </ChatContainer>
+                    </UserContainer>
+                    <UserContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                        <ChatContainer>
+                            <LeftChat>sadf</LeftChat>
+                        </ChatContainer>
+                    </UserContainer>
+                    <UserContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                        <ChatContainer>
+                            <LeftChat>sadf</LeftChat>
+                        </ChatContainer>
+                    </UserContainer>
+                    <UserContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                        <ChatContainer>
+                            <LeftChat>sadf</LeftChat>
+                        </ChatContainer>
+                    </UserContainer>
                 </UserContainerL>
                 <DrawingAppContainer>
                     <DrawingApp></DrawingApp>
@@ -164,18 +199,32 @@ const DrawingPage = () => {
                     </InputContainer>
                 </DrawingAppContainer>
                 <UserContainerR>
-                    <UserProfileInRoom nickname={"5"}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"6"}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"7"}></UserProfileInRoom>
-                    <UserProfileInRoom nickname={"8"}></UserProfileInRoom>
+                    <UserContainer>
+                        <ChatContainer>
+                            <RightChat>sadf</RightChat>
+                        </ChatContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                    </UserContainer>
+                    <UserContainer>
+                        <ChatContainer>
+                            <RightChat>sadf</RightChat>
+                        </ChatContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                    </UserContainer>
+                    <UserContainer>
+                        <ChatContainer>
+                            <RightChat>sadf</RightChat>
+                        </ChatContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                    </UserContainer>
+                    <UserContainer>
+                        <ChatContainer>
+                            <RightChat>sadf</RightChat>
+                        </ChatContainer>
+                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
+                    </UserContainer>
                 </UserContainerR>
             </Container>
-            <ChatContainer>
-                <RightChat>오른쪽 아래 말풍선</RightChat>
-            </ChatContainer>
-            <ChatContainer>
-                <LeftChat>왼쪽 아래 말풍선</LeftChat>
-            </ChatContainer>
         </HomeUI>
     );
 };
