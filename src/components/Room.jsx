@@ -15,7 +15,6 @@ const Room = (props) => {
         console.log(number, memberId);
         const response = await sendGameRoomJoinRequest(number, memberId);
 
-        console.log("rerwrerwerwe",response);
         if(response){
             const { 
                 gameRoomId, 
@@ -28,7 +27,7 @@ const Room = (props) => {
                 roomManagerName 
             } = response;
 
-            navigate("/room", {
+            navigate(`/room/${gameRoomId}`, {
                 state: { 
                     gameRoomId, 
                     gameId, 
@@ -41,7 +40,7 @@ const Room = (props) => {
                 }
             });
         } else {
-            console.error("방 입장 실패 또는 에러 처리");
+            alert("방 입장에 실패하였습니다.");
         }
     }
 

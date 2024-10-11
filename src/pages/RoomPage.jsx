@@ -47,7 +47,6 @@ const RoomPage = () => {
     const member = JSON.parse(JSON.parse(getLocalStorage('member')));
     const [gameStart, setGameStart] = useState(false);
 
-
     const handleGetJoinMember = async () => {
         const requestParam = { memberIds: memberIds };
         const response = await getMemberListRequest(requestParam);

@@ -125,6 +125,7 @@ const RightChat = styled(Chat)`
     border-style: solid;
     border-color: transparent transparent transparent #484848;
     margin-left: -5px; /* 꼬리 중앙 정렬 */
+    z-index: 1;
   }
 `;
 
@@ -138,6 +139,7 @@ const LeftChat = styled(Chat)`
     border-style: solid;
     border-color: transparent #484848 transparent transparent;
     margin-right: -5px; /* 꼬리 중앙 정렬 */
+    z-index: 1;
   }
 `;
 

@@ -36,6 +36,8 @@ const Container = styled.div`
 const Canvas = styled.canvas`
   border: 1px solid #000;
   cursor: ${(props) => props.cursor};
+  position: relative;
+  z-index: 2;
 `;
 
 const Tools = styled.div`
@@ -264,41 +266,41 @@ const DrawingApp = () => {
   };
 
   return (
-      <Container>
-        <Tools>
-          <ResetButton onClick={resetCanvas}>리셋</ResetButton>
-          <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}>펜</ToolButton>
-          <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}>브러쉬</ToolButton>
-          <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}>페인트 도구</ToolButton>
-          <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}>지우개</ToolButton>
-          <ColorPicker
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <LineWidthSelector
-            type="range"
-            min="1"
-            max="50"
-            value={lineWidth}
-            onChange={(e) => setLineWidth(e.target.value)}
-          />
-          {lineWidth}
-        </Tools>
-        <Canvas
-          ref={canvasRef}
-          width={600}
-          height={530}
-          cursor={getCursorStyle()}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={endDrawing}
-          onMouseLeave={endDrawing}
-          onClick={(e) => {
-            if (isPaint) handleClick(e);
-          }}
+    <Container>
+      <Tools>
+        <ResetButton onClick={resetCanvas}>리셋</ResetButton>
+        <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}>펜</ToolButton>
+        <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}>브러쉬</ToolButton>
+        <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}>페인트 도구</ToolButton>
+        <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}>지우개</ToolButton>
+        <ColorPicker
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
         />
-      </Container>
+        <LineWidthSelector
+          type="range"
+          min="1"
+          max="50"
+          value={lineWidth}
+          onChange={(e) => setLineWidth(e.target.value)}
+        />
+        {lineWidth}
+      </Tools>
+      <Canvas
+        ref={canvasRef}
+        width={600}
+        height={530}
+        cursor={getCursorStyle()}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={endDrawing}
+        onMouseLeave={endDrawing}
+        onClick={(e) => {
+          if (isPaint) handleClick(e);
+        }}
+      />
+    </Container>
   );
 };
 

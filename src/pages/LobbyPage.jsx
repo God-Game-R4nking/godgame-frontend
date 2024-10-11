@@ -147,7 +147,7 @@ const LobbyPage = () => {
         if(response){
         setGameRoomResponse(response.data);
         }
-    }
+    };
 
     useEffect(() => {
         getGameRooms();
@@ -160,11 +160,11 @@ const LobbyPage = () => {
         if (response) {
             const { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds, roomManagerName } = response;
 
-            navigate("/room", {
+            navigate(`/room/${gameRoomId}`, {
                 state: { gameRoomId, gameId, gameRoomName, currentPopulation, maxPopulation, gameRoomStatus, memberIds, roomManagerName }
             });
         } else {
-            console.error("방 생성 실패 또는 에러 처리");
+            alert("방생성에 실패하였습니다.");
         }
     };
 
@@ -206,7 +206,6 @@ const LobbyPage = () => {
                     <FriendListTitle>&nbsp; 👥 친구 목록</FriendListTitle>
                     <FriendList></FriendList>
                 </LayoutStyle>
-
             </LayoutStyle>
         </HomeUI>
     );
