@@ -9,7 +9,8 @@ import PostDetailPage from "./pages/PostDetailPage";
 import { Write, Edit } from "./pages/PostEditorPage";
 import CommunityPage from "./pages/CommunityPage";
 import RankPage from "./pages/RankPage";
-import DrawingApp from "./pages/DrawingApp";
+import DrawingPage from "./pages/DrawingPage";
+import { Status404 } from "./pages/ErrorResponsePage";
 import { BrowserRouter, Routes, Route } from 'react-router-dom';
 
 const App = () => {
@@ -28,8 +29,9 @@ const App = () => {
           <Route path='/board/edit' element={<Edit />} />
           <Route path='/community' element={<CommunityPage />} />
           <Route path='/rank' element={<RankPage />} />
-          <Route path='/question' element={<DrawingApp />} />
+          <Route path='/question' element={<DrawingPage />} />
           <Route path='/room' element={<RoomPage />} />
+          <Route path='/exception/404' element={<Status404 />} />
         </Routes>
       </div>
     </BrowserRouter>

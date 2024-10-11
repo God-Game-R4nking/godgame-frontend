@@ -10,6 +10,7 @@ const ButtonStyleGray = styled.button`
     font-family: Pixel;
     font-size: ${(props) => props.fontSize || '22px'};
     margin-right: ${(props) => props.marginRight};
+    display: ${(props) => props.display};
 
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
 
@@ -33,6 +34,7 @@ const ButtonStyleDefault = styled.button`
     font-size: ${(props) => props.fontSize || '22px'};
     color: ${(props) => props.color};
     margin-right: ${(props) => props.marginRight};
+    display: ${(props) => props.display};
     
     transition: background-color 0.3s, transform 0.1s; /* 애니메이션 효과 추가 */
     
@@ -67,7 +69,7 @@ const ButtonStylePass = styled.button`
 `;
 
 const Button = forwardRef((props, ref) => {
-    const { style, tabIndex, width, height, onClick, onKeyDown, marginRight, children, border, color, backgroundColor, borderRadius, fontSize } = props;
+    const { style, tabIndex, width, height, display, onClick, onKeyDown, marginRight, children, border, color, backgroundColor, borderRadius, fontSize } = props;
 
     switch (style) {
         case 'gray': {
@@ -84,6 +86,7 @@ const Button = forwardRef((props, ref) => {
                     onKeyDown={onKeyDown}
                     backgroundColor={backgroundColor}
                     color={color}
+                    display={display}
                 >
                     {children}
                 </ButtonStyleGray>
@@ -119,6 +122,7 @@ const Button = forwardRef((props, ref) => {
                     onKeyDown={onKeyDown}
                     backgroundColor={backgroundColor}
                     color={color}
+                    display={display}
                     marginRight={marginRight}
                 >
                     {children}

@@ -13,6 +13,7 @@ const Wrap = styled.div`
     border-radius: 10px;
     margin: 5px; /* 간격을 주기 위한 마진 */
     box-sizing: border-box; /* padding과 border를 포함하여 계산 */
+    display: ${(props) => props.display};
 `;
 
 const Img = styled.div`
@@ -22,9 +23,12 @@ const Img = styled.div`
     margin-bottom: 10px;
 `;
 
-const UserProfileInRoom = ({ nickname }) => {
+const UserProfileInRoom = (props) => {
+    const { nickname, display } = props;
     return (
-        <Wrap>
+        <Wrap
+            display={display}
+        >
             <Img></Img>
             <Content2>{nickname}</Content2>
         </Wrap>

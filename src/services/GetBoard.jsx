@@ -11,6 +11,7 @@ const getBoardRequest = async (boardId, page, size) => {
             'Content-Type': 'application/json',
             'Authorization': token,
         },
+        validateStatus: (status) => status >= 200 && status < 510, // 에러코드 예외 안뜨게 처리
     });
 
     return response.data;

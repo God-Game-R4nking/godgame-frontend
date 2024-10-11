@@ -1,7 +1,5 @@
 import React, { useRef, useState, useEffect } from 'react';
-import Input from '../components/Input';
 import styled from 'styled-components';
-import HomeUI from '../components/HomeUI';
 
 const getPenCursor = (color, width = 50, height = 50) => `
 <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" width="${width}" height="${height}" stroke-width="1" stroke="white" class="size-6">
@@ -52,7 +50,6 @@ const ToolButton = styled.button`
   background-color: ${(props) => (props.active ? '#727272' : '#f0f0f0')};
   border: 1px solid #ccc;
   border-radius: 5px;
-  cursor: pointer;
 
   &:hover {
     background-color: #ddd;
@@ -74,7 +71,6 @@ const ResetButton = styled.button`
   color: white;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
 
   &:hover {
     background-color: #d32f2f;
@@ -268,7 +264,6 @@ const DrawingApp = () => {
   };
 
   return (
-    <HomeUI gamemode={true}>
       <Container>
         <Tools>
           <ResetButton onClick={resetCanvas}>리셋</ResetButton>
@@ -293,7 +288,7 @@ const DrawingApp = () => {
         <Canvas
           ref={canvasRef}
           width={600}
-          height={800}
+          height={530}
           cursor={getCursorStyle()}
           onMouseDown={startDrawing}
           onMouseMove={draw}
@@ -304,7 +299,6 @@ const DrawingApp = () => {
           }}
         />
       </Container>
-    </HomeUI>
   );
 };
 

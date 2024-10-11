@@ -78,8 +78,8 @@ const RoomPage = () => {
         if (isConnected) {
             console.log("WebSocket connected!");
             console.log("memberID", member)
-            sendMessage({ type: "JOIN_GAME", gameRoomId: gameRoomId, nickName : member.data.nickName,  memberId : member.data.memberId , content : "게임 입장" });
-            
+            sendMessage({ type: "JOIN_GAME", gameRoomId: gameRoomId, nickName: member.data.nickName, memberId: member.data.memberId, content: "게임 입장" });
+
         }
     }, [isConnected]);
 
@@ -97,7 +97,7 @@ const RoomPage = () => {
     }, [messages]);
 
     const handleGameStart = () => {
-        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName : member.data.nickName, memberId : member.data.memberId , content : "게임 시작" });
+        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName: member.data.nickName, memberId: member.data.memberId, content: "게임 시작" });
     };
 
     return (
@@ -118,7 +118,7 @@ const RoomPage = () => {
                     </LayoutStyle>
                 </LayoutStyle>
                 <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
-                    <Chating gameRoomId = {gameRoomId} memberId = {member.data.memberId} nickName = {member.data.nickName}></Chating>
+                    <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName}></Chating>
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
