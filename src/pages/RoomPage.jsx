@@ -10,6 +10,7 @@ import getMemberListRequest from "../services/GetMemberList";
 import useWebSocket from "../hooks/WebSockethook";
 import getGameRoomRequest from "../services/GetGameRoom";
 import { getLocalStorage } from "../utils/LocalStorageManager";
+import sendGameRoomLeaveRequest from "../services/PostGameRoomLeave";
 
 
 const InfoBar = styled.div`
@@ -78,8 +79,8 @@ const RoomPage = () => {
         if (isConnected) {
             console.log("WebSocket connected!");
             console.log("memberID", member)
-            sendMessage({ type: "JOIN_GAME", gameRoomId: gameRoomId, nickName : member.data.nickName,  memberId : member.data.memberId , content : "게임 입장" });
-            
+            sendMessage({ type: "JOIN_GAME", gameRoomId: gameRoomId, nickName: member.data.nickName, memberId: member.data.memberId, content: "게임 입장" });
+
         }
     }, [isConnected]);
 
@@ -97,11 +98,46 @@ const RoomPage = () => {
     }, [messages]);
 
     const handleGameStart = () => {
-        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName : member.data.nickName, memberId : member.data.memberId , content : "게임 시작" });
+        sendMessage({ type: "GAME_START", gameRoomId: gameRoomId, nickName: member.data.nickName, memberId: member.data.memberId, content: "게임 시작" });
     };
 
+    const leaveGame = async () => {
+        const isConfirmed = window.confirm("정말로 게임을 나가시겠습니까?");
+        
+        if (isConfirmed) {
+            const response = await sendGameRoomLeaveRequest(gameRoomId, member.data.memberId);
+
+            if (response) {
+                sendMessage({ 
+                    type: "LEAVE_GAME", 
+                    gameRoomId: gameRoomId, 
+                    nickName: member.data.nickName, 
+                    memberId: member.data.memberId, 
+                    content: `${member.data.nickName}님이 게임을 떠났습니다` 
+                });
+            }
+        }
+        // 사용자가 취소를 선택한 경우, 아무 동작도 하지 않습니다.
+    }
+
+    // useEffect(() => {
+    //     // 브라우저의 뒤로 가기 버튼을 방지하기 위해 history 상태를 조작합니다.
+    //     const preventBackNavigation = () => {
+    //         window.history.pushState(null, '', window.location.href);
+    //     };
+    
+    //     // 현재 상태를 저장하고 뒤로 가기를 방지합니다.
+    //     window.history.pushState(null, '', window.location.href);
+    //     window.addEventListener('popstate', preventBackNavigation);
+    
+    //     // 컴포넌트가 언마운트될 때 이벤트 리스너를 제거합니다.
+    //     return () => {
+    //         window.removeEventListener('popstate', preventBackNavigation);
+    //     };
+    // }, []);
+
     return (
-        <HomeUI navMode={"room"}>
+        <HomeUI navMode={"room"} handleLeave = {leaveGame}>
             <LayoutStyle display={"flex"} flexDirection={"row"} width={"100%"} height={"100%"}>
                 <LayoutStyle display={"flex"} flexDirection={"column"} width={"70%"} height={"100%"}>
                     <InfoBar>
@@ -118,7 +154,7 @@ const RoomPage = () => {
                     </LayoutStyle>
                 </LayoutStyle>
                 <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
-                    <Chating gameRoomId = {gameRoomId} memberId = {member.data.memberId} nickName = {member.data.nickName}></Chating>
+                    <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName}></Chating>
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>

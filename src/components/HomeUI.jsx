@@ -31,7 +31,7 @@ const Gameboy2 = styled.div`
 `;
 
 const HomeUI = (props) => {
-    const { children, navMode, AddRoom, category, gamemode } = props;
+    const { children, navMode, AddRoom, category, gamemode, handleLeave } = props;
     const [member, setMember] = useState(null);
     const navigate = useNavigate();
 
@@ -55,6 +55,7 @@ const HomeUI = (props) => {
             username={member ? member.data.nickName : ""}
             AddRoom={AddRoom}
             category={category}
+            handleLeave = {handleLeave}
         />
     );
 

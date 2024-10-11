@@ -22,7 +22,7 @@ const Div = styled.div`
 `;
 
 const NavigationBar = (props) => {
-    const { mode, username, AddRoom, category } = props;
+    const { mode, username, AddRoom, category, handleLeave } = props;
     
     if (mode === 'lobby') {
         return (
@@ -41,7 +41,7 @@ const NavigationBar = (props) => {
         return (
             <Nav>
                 <NavBar>
-                    <Link to="/home"><Home /></Link>
+                    <Link to="/home"><Home onClick={handleLeave}/></Link>
                     <Reload />
                     <Setting />
                 </NavBar>
