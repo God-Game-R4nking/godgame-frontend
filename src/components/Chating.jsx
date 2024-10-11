@@ -83,10 +83,9 @@ const Chat = styled.div`
     padding-bottom: 10px;
 `;
 
-const Chating = ({ memberId, gameRoomId, nickName }) => {
+const Chating = ({ memberId, gameRoomId, nickName, messages, sendMessage }) => {
     const inputRef = useRef(null);
     const [chat, setChat] = useState([]);
-    const { messages, sendMessage } = useWebSocket();
     const scrollRef = useRef(null);
     const prevMessagesRef = useRef([]);
 

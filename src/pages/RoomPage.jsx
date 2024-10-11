@@ -154,7 +154,7 @@ const RoomPage = () => {
                     </LayoutStyle>
                 </LayoutStyle>
                 <LayoutStyle display={"flex"} width={"30%"} height={"100%"}>
-                    <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName}></Chating>
+                    <Chating gameRoomId={gameRoomId} memberId={member.data.memberId} nickName={member.data.nickName} messages={messages} sendMessage={sendMessage}></Chating>
                 </LayoutStyle>
             </LayoutStyle>
             <LayoutStyle display={"flex"} flexDirection={"row"} justifyContent={"right"} marginRight={"10px"} marginBottom={"10px"}>
