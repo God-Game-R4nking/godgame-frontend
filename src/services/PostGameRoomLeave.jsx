@@ -1,7 +1,7 @@
 import axios from 'axios';
 
 // 게임 방 나가기 요청
-const sendGameRoomJoinRequest = async (gameRoomId, memberId) => {
+const sendGameRoomLeaveRequest = async (gameRoomId, memberId) => {
     try {
         const response = await axios.post(`http://localhost:8080/game-rooms/${gameRoomId}/leave/${memberId}`, null , {
             headers: {
@@ -10,7 +10,7 @@ const sendGameRoomJoinRequest = async (gameRoomId, memberId) => {
         });
         if (response.status === 200 || response.status === 201) {
             console.log("성공");
-            return response.data;ㄴ
+            return response.data;
         }
     } catch (error) {
         console.error("실패", error);
@@ -21,4 +21,4 @@ const sendGameRoomJoinRequest = async (gameRoomId, memberId) => {
     }
 };
 
-export default sendGameRoomJoinRequest;
+export default sendGameRoomLeaveRequest;

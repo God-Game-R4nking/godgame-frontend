@@ -71,10 +71,25 @@ const useWebSocket = () => {
         nickName : requestBody.nickName,
         content : requestBody.content
       };
-      console.log("message message ", message);
+      
       socket.send(JSON.stringify(message));
     }
   }, [socket, isConnected]);
+
+  const sendCoordinate = useCallback((requestBody) => {
+    if(socket && isConnected){
+      const message = {
+        memberId : requestBody.memberId,
+        gameRoomId : requestBody.gameRoomId,
+        type : requestBody.type,
+        xCoordinate : requestBody.xCoordinate,
+        yCoordinate : requestBody.yCoordinate
+      };
+      console.log("Coordinate message ", message);
+      socket.send(JSON.stringify(message));
+    }
+  })
+
 
   return { isConnected, messages, sendMessage };
 };
