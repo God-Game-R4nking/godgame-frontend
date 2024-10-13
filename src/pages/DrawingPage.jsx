@@ -1,8 +1,9 @@
-import React, { useRef } from "react";
+import React, { useRef, useEffect, useState, useMemo } from "react";
 import DrawingApp from "../components/DrawingApp";
 import HomeUI from "../components/HomeUI";
 import UserProfileInRoom from "../components/UserProfileInRoom";
 import styled from "styled-components";
+import { getLocalStorage } from "../utils/LocalStorageManager";
 
 const Container = styled.div`
     display: flex;
@@ -141,52 +142,110 @@ const LeftChat = styled(Chat)`
   }
 `;
 
-const DrawingPage = () => {
+const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, messages, drawingData, sendMessage, sendDrawingData }) => {
     const inputRef = useRef();
+    const [leftMembers, setLeftMembers] = useState([]);
+    const [rightMembers, setRightMembers] = useState([]);
+    const member = JSON.parse(JSON.parse(getLocalStorage('member')));
+    const [memberMessages, setMemberMessages] = useState({});
+
+
+    const resetMessage = useMemo(() => {
+        return messages.filter(msg => {
+            const parsedMsg = JSON.parse(msg);
+            return parsedMsg.type === "reset";
+        });
+    }, [messages]);
+
 
     const handleKeyDown = (e) => {
         if (e.key === 'Enter') {
-            console.log("Enter 감지");
+            handleSend();
         }
-    }
+    };
 
     const handleSend = () => {
-        console.log("메시지 전송");
-    }
+        const inputMessage = inputRef.current.value;
+        if (inputMessage.trim()) {
+            sendMessage({
+                type: "CATCH_MIND_CHAT",
+                gameRoomId: gameRoomId,
+                nickName: member.data.nickName,
+                memberId: member.data.memberId,
+                content: inputMessage
+            });
+            inputRef.current.value = "";
+        }
+    };
 
+    useEffect(() => {
+        const left = [];
+        const right = [];
+
+        for (let i = 0; i < joinMember.length; i++) {
+            if (i % 2 === 0) {
+                left.push(joinMember[i]);
+            } else {
+                right.push(joinMember[i]);
+            }
+        }
+        setLeftMembers(left);
+        setRightMembers(right);
+    }, [joinMember]);
+
+    useEffect(() => {
+        if (messages.length > 0) {
+            const latestMessage = JSON.parse(messages[messages.length - 1]);
+            const { nickName, content } = latestMessage;
+
+            setMemberMessages((prevMessages) => ({
+                ...prevMessages,
+                [nickName]: { content, timestamp: Date.now() }
+            }));
+
+            // 5초 후 메시지 제거
+            setTimeout(() => {
+                setMemberMessages((prevMessages) => {
+                    const newMessages = { ...prevMessages };
+                    delete newMessages[nickName];
+                    return newMessages;
+                });
+            }, 5000);
+        }
+    }, [messages]);
+
+    const renderMessage = (nickname) => {
+        const message = memberMessages[nickname];
+        if (message && Date.now() - message.timestamp < 5000) {
+            return message.content;
+        }
+        return null;
+    };
 
     return (
         <HomeUI gamemode={true}>
             <Container>
                 <UserContainerL>
-                    {/* display => 사람 없으면 none 처리해서 안보이게 만듬. */}
-                    <UserContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                        <ChatContainer>
-                            <LeftChat>asdasdasdsadasdasdasdsadasdasdasdsad</LeftChat>
-                        </ChatContainer>
-                    </UserContainer>
-                    <UserContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                        <ChatContainer>
-                            <LeftChat>sadf</LeftChat>
-                        </ChatContainer>
-                    </UserContainer>
-                    <UserContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                        <ChatContainer>
-                            <LeftChat>sadf</LeftChat>
-                        </ChatContainer>
-                    </UserContainer>
-                    <UserContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                        <ChatContainer>
-                            <LeftChat>sadf</LeftChat>
-                        </ChatContainer>
-                    </UserContainer>
+                    {leftMembers.map((member, index) => (
+                        <UserContainer key={index}>
+                            <UserProfileInRoom nickname={member.nickName} display={""} />
+                            <ChatContainer>
+                                {renderMessage(member.nickName) && (
+                                    <LeftChat>{renderMessage(member.nickName)}</LeftChat>
+                                )}
+                            </ChatContainer>
+                        </UserContainer>
+                    ))}
                 </UserContainerL>
                 <DrawingAppContainer>
-                    <DrawingApp></DrawingApp>
+                    <DrawingApp gameRoomId={gameRoomId}
+                        memberId={memberId}
+                        nickName={nickName}
+                        isConnected={isConnected}
+                        resetMessage={resetMessage}
+                        drawingData={drawingData}
+                        sendMessage={sendMessage}
+                        sendDrawingData={sendDrawingData} />
                     <InputContainer>
                         <Input
                             ref={inputRef}
@@ -199,30 +258,16 @@ const DrawingPage = () => {
                     </InputContainer>
                 </DrawingAppContainer>
                 <UserContainerR>
-                    <UserContainer>
-                        <ChatContainer>
-                            <RightChat>sadf</RightChat>
-                        </ChatContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                    </UserContainer>
-                    <UserContainer>
-                        <ChatContainer>
-                            <RightChat>sadf</RightChat>
-                        </ChatContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                    </UserContainer>
-                    <UserContainer>
-                        <ChatContainer>
-                            <RightChat>sadf</RightChat>
-                        </ChatContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                    </UserContainer>
-                    <UserContainer>
-                        <ChatContainer>
-                            <RightChat>sadf</RightChat>
-                        </ChatContainer>
-                        <UserProfileInRoom nickname={"1"} display={""}></UserProfileInRoom>
-                    </UserContainer>
+                    {rightMembers.map((member, index) => (
+                        <UserContainer key={index}>
+                            <ChatContainer>
+                                {renderMessage(member.nickName) && (
+                                    <RightChat>{renderMessage(member.nickName)}</RightChat>
+                                )}
+                            </ChatContainer>
+                            <UserProfileInRoom nickname={member.nickName} display={""} />
+                        </UserContainer>
+                    ))}
                 </UserContainerR>
             </Container>
         </HomeUI>

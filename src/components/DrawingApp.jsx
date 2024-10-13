@@ -77,7 +77,7 @@ const ResetButton = styled.button`
   }
 `;
 
-const DrawingApp = () => {
+const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage, drawingData, sendMessage, sendDrawingData }) => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [ctx, setCtx] = useState(null);
@@ -87,11 +87,166 @@ const DrawingApp = () => {
   const [cursor, setCursor] = useState('');
   const [activeTool, setActiveTool] = useState('pen');
   const [isPaint, setIsPaint] = useState(false);
+  const [lastPoint, setLastPoint] = useState(null);
+  const [drawingCommands, setDrawingCommands] = useState([]);
 
   useEffect(() => {
-    setCursor(getCursorStyle());
-    console.log(tool);
-  }, [tool, color, lineWidth]);
+    const canvas = canvasRef.current;
+    const context = canvas.getContext('2d');
+    setCtx(context);
+  }, []);
+
+  useEffect(() => {
+    console.log("asdasdasd",drawingData);
+    if (drawingData.length > 0) {
+      const lastData = drawingData[drawingData.length - 1];
+      const parseLastData = JSON.parse(lastData);
+      if (parseLastData.type === 'DRAWING_DATA') {
+        executeDrawingCommands(parseLastData.commands);
+      } else if (parseLastData.type === 'FULL_CANVAS') {
+        loadFullCanvas(parseLastData.imageData);
+      }
+    }
+  }, [drawingData]);
+
+  useEffect(() => {
+    if(resetMessage.length > 0){
+      const lastMessage = resetMessage[resetMessage.length -1];
+      const parseLastMessage = JSON.parse(lastMessage);
+      if(parseLastMessage.type === "reset"){}
+      ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    }
+  }, [resetMessage]);
+
+
+  const executeDrawingCommands = (commands) => {
+    if (!ctx) return;
+    commands.forEach(cmd => {
+      switch (cmd.type) {
+        case 'moveTo':
+          ctx.moveTo(cmd.x, cmd.y);
+          break;
+        case 'lineTo':
+          ctx.lineTo(cmd.x, cmd.y);
+          ctx.stroke();
+          break;
+        case 'beginPath':
+          ctx.beginPath();
+          break;
+        case 'closePath':
+          ctx.closePath();
+          break;
+        case 'setStrokeStyle':
+          ctx.strokeStyle = cmd.color;
+          break;
+        case 'setLineWidth':
+          ctx.lineWidth = cmd.width;
+          break;
+      }
+    });
+  };
+
+  const loadFullCanvas = (imageData) => {
+    const img = new Image();
+    img.onload = () => {
+      ctx.drawImage(img, 0, 0);
+    };
+    img.src = imageData;
+  };
+  const startDrawing = (event) => {
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = Math.floor(event.clientX - rect.left);
+    const y = Math.floor(event.clientY - rect.top);
+
+    setIsDrawing(true);
+    setLastPoint({ x, y });
+
+    const newCommands = [
+      { type: 'beginPath' },
+      { type: 'moveTo', x, y },
+      { type: 'setStrokeStyle', color },
+      { type: 'setLineWidth', width: lineWidth },
+      { type: 'setGlobalCompositeOperation', operation: tool === 'eraser' ? 'destination-out' : 'source-over' }
+    ];
+
+    setDrawingCommands(newCommands);
+
+    ctx.beginPath();
+    ctx.moveTo(x, y);
+    ctx.strokeStyle = color;
+    ctx.lineWidth = lineWidth;
+    ctx.globalCompositeOperation = tool === 'eraser' ? 'destination-out' : 'source-over';
+  };
+
+  const draw = (event) => {
+    if (!isDrawing) return;
+
+    const canvas = canvasRef.current;
+    const rect = canvas.getBoundingClientRect();
+    const x = event.clientX - rect.left;
+    const y = event.clientY - rect.top;
+
+    const dx = x - lastPoint.x;
+    const dy = y - lastPoint.y;
+    const distance = Math.sqrt(dx * dx + dy * dy);
+
+    if (distance > 5) {
+      ctx.lineTo(x, y);
+      ctx.stroke();
+
+      setLastPoint({ x, y });
+      setDrawingCommands(prev => [...prev, { type: 'lineTo', x, y }]);
+    }
+  };
+
+  const endDrawing = () => {
+    if (!isDrawing) return;
+
+    setIsDrawing(false);
+    ctx.closePath();
+
+    sendDrawingData({
+      memberId,
+      gameRoomId,
+      type: 'DRAWING_DATA',
+      commands: [...drawingCommands, { type: 'closePath' }]
+    });
+
+    setDrawingCommands([]);
+  };
+
+  // useEffect(() => {
+  //   const interval = setInterval(() => {
+  //     const canvas = canvasRef.current;
+  //     const imageData = canvas.toDataURL();
+  //     sendDrawingData({
+  //       memberId,
+  //       gameRoomId,
+  //       type: 'FULL_CANVAS',
+  //       imageData
+  //     });
+  //   }, 10000);
+
+  //   return () => clearInterval(interval);
+  // }, [gameRoomId, memberId, sendDrawingData]);
+
+  const resetCanvas = () => {
+    ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+    sendMessage({
+      memberId,
+      gameRoomId,
+      type: 'reset',
+      nickName,
+      content: 'Canvas reset',
+    });
+  };
+
+  const handleToolChange = (toolType) => {
+    setTool(toolType);
+    setActiveTool(toolType);
+    setIsPaint(toolType === 'paint');
+  };
 
   const getCursorStyle = () => {
     switch (tool) {
@@ -188,117 +343,42 @@ const DrawingApp = () => {
     return [imageData[0], imageData[1], imageData[2], imageData[3]];
   };
 
-  const startDrawing = (event) => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-    const rect = canvas.getBoundingClientRect();
-    const x = Math.floor(event.clientX - rect.left);
-    const y = Math.floor(event.clientY - rect.top);
-
-    context.moveTo(x, y);
-    context.beginPath();
-    setCtx(context);
-    context.strokeStyle = color;
-    context.lineWidth = lineWidth;
-    console.log(context); // TODO : 공유해야하는거 (그림 정보)
-
-    if (tool === 'eraser') {
-      context.globalCompositeOperation = 'destination-out';
-    } else {
-      context.globalCompositeOperation = 'source-over';
-    }
-    setIsDrawing(true);
-  };
-
-  const draw = (event) => {
-    if (!isDrawing) return;
-
-    const canvas = canvasRef.current;
-    const context = ctx;
-    const rect = canvas.getBoundingClientRect();
-    const x = event.clientX - rect.left;
-    const y = event.clientY - rect.top;
-
-    context.lineTo(x, y);
-
-    if (tool === 'pen') {
-      context.lineWidth = lineWidth; // 펜 두께 설정
-      context.lineJoin = 'miter'; // 펜 선의 조인 스타일
-      context.lineCap = 'butt'; // 펜 선의 끝 스타일
-      context.strokeStyle = color;
-    } else if (tool === 'paint') {
-      return;
-    }
-    else if (tool === 'brush') {
-      context.lineWidth = lineWidth * 2; // 브러쉬 두께 설정
-      context.lineJoin = 'round'; // 브러쉬 선의 조인 스타일
-      context.lineCap = 'round'; // 브러쉬 선의 끝 스타일
-      context.strokeStyle = color;
-    } else if (tool === 'eraser') {
-      context.globalCompositeOperation = 'destination-out'; // 지우개
-      context.lineWidth = lineWidth; // 지우개 두께 설정
-      context.lineJoin = 'miter'; // 펜 선의 조인 스타일
-      context.lineCap = 'butt'; // 펜 선의 끝 스타일
-    }
-
-    context.stroke(); // 선 그리기
-  };
-
-  const endDrawing = () => {
-    setIsDrawing(false);
-    if (ctx !== null) ctx.closePath();
-  };
-
-  const resetCanvas = () => {
-    const canvas = canvasRef.current;
-    const context = canvas.getContext('2d');
-    context.clearRect(0, 0, canvas.width, canvas.height);
-  };
-
-  const handleToolChange = (toolType) => {
-    if (toolType === 'paint') setIsPaint(true);
-    else setIsPaint(false);
-
-    setTool(toolType);
-    setActiveTool(toolType);
-  };
-
   return (
-      <Container>
-        <Tools>
-          <ResetButton onClick={resetCanvas}>리셋</ResetButton>
-          <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}>펜</ToolButton>
-          <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}>브러쉬</ToolButton>
-          <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}>페인트 도구</ToolButton>
-          <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}>지우개</ToolButton>
-          <ColorPicker
-            type="color"
-            value={color}
-            onChange={(e) => setColor(e.target.value)}
-          />
-          <LineWidthSelector
-            type="range"
-            min="1"
-            max="50"
-            value={lineWidth}
-            onChange={(e) => setLineWidth(e.target.value)}
-          />
-          {lineWidth}
-        </Tools>
-        <Canvas
-          ref={canvasRef}
-          width={600}
-          height={530}
-          cursor={getCursorStyle()}
-          onMouseDown={startDrawing}
-          onMouseMove={draw}
-          onMouseUp={endDrawing}
-          onMouseLeave={endDrawing}
-          onClick={(e) => {
-            if (isPaint) handleClick(e);
-          }}
+    <Container>
+      <Tools>
+        <ResetButton onClick={resetCanvas}>리셋</ResetButton>
+        <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}>펜</ToolButton>
+        <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}>브러쉬</ToolButton>
+        <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}>페인트 도구</ToolButton>
+        <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}>지우개</ToolButton>
+        <ColorPicker
+          type="color"
+          value={color}
+          onChange={(e) => setColor(e.target.value)}
         />
-      </Container>
+        <LineWidthSelector
+          type="range"
+          min="1"
+          max="50"
+          value={lineWidth}
+          onChange={(e) => setLineWidth(e.target.value)}
+        />
+        {lineWidth}
+      </Tools>
+      <Canvas
+        ref={canvasRef}
+        width={600}
+        height={530}
+        cursor={getCursorStyle()}
+        onMouseDown={startDrawing}
+        onMouseMove={draw}
+        onMouseUp={endDrawing}
+        onMouseLeave={endDrawing}
+        onClick={(e) => {
+          if (isPaint) handleClick(e);
+        }}
+      />
+    </Container>
   );
 };
 

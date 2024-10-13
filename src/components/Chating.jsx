@@ -87,21 +87,27 @@ const Chating = ({ memberId, gameRoomId, nickName, messages, sendMessage }) => {
     const inputRef = useRef(null);
     const [chat, setChat] = useState([]);
     const scrollRef = useRef(null);
-    const prevMessagesRef = useRef([]);
+    const processedMessagesRef = useRef(new Set());
 
     useEffect(() => {
-        if (messages && messages !== prevMessagesRef.current) {
-            const newMessages = Array.isArray(messages) ? messages : [messages];
-            const filteredNewMessages = newMessages.filter(msg => 
-                msg && 
-                typeof msg === 'string' && 
-                msg.trim() !== '' && 
-                !prevMessagesRef.current.includes(msg)
-            );
+        if (messages && Array.isArray(messages)) {
+            const newMessages = messages.filter(msg => {
+                if (typeof msg === 'string') {
+                    try {
+                        const parsedMsg = JSON.parse(msg);
+                        if (!processedMessagesRef.current.has(JSON.stringify(parsedMsg))) {
+                            processedMessagesRef.current.add(JSON.stringify(parsedMsg));
+                            return true;
+                        }
+                    } catch (error) {
+                        console.error("Invalid JSON format", error);
+                    }
+                }
+                return false;
+            }).map(msg => JSON.parse(msg));
 
-            if (filteredNewMessages.length > 0) {
-                setChat(prevChat => [...prevChat, ...filteredNewMessages]);
-                prevMessagesRef.current = [...prevMessagesRef.current, ...filteredNewMessages];
+            if (newMessages.length > 0) {
+                setChat(prevChat => [...prevChat, ...newMessages]);
             }
         }
     }, [messages]);
@@ -137,7 +143,7 @@ const Chating = ({ memberId, gameRoomId, nickName, messages, sendMessage }) => {
         <Container>
             <ScrollDiv ref={scrollRef}>
                 {chat.map((data, index) => (
-                    <Chat key={index}>{data}</Chat>
+                    <Chat key={index}>{data.nickName} : {data.content}</Chat>
                 ))}
             </ScrollDiv>
             <InputContainer>

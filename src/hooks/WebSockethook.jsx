@@ -6,6 +6,7 @@ const useWebSocket = () => {
   const [socket, setSocket] = useState(null);
   const [isConnected, setIsConnected] = useState(false);
   const [messages, setMessages] = useState([]);
+  const [drawingData, setDrawingData] = useState([]);
   const token = getLocalStorage('token'); // 로컬 스토리지에서 토큰 가져오기
   const [websocketUrl, setWebsocketUrl] = useState(null);
   const [userId, setUserId] = useState();
@@ -46,7 +47,12 @@ const useWebSocket = () => {
 
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
-        setMessages((prevMessages) => [...prevMessages, message]);
+        const parseMessage = JSON.parse(message);
+        if (parseMessage.type === "DRAWING_DATA" || parseMessage.type === "FULL_CANVAS") {
+          setDrawingData((prevData) => [...prevData, message]);
+        } else {
+          setMessages((prevMessages) => [...prevMessages, message]);
+        }
       };
 
       ws.onclose = () => {
@@ -71,27 +77,18 @@ const useWebSocket = () => {
         nickName : requestBody.nickName,
         content : requestBody.content
       };
-      
       socket.send(JSON.stringify(message));
     }
   }, [socket, isConnected]);
 
-  const sendCoordinate = useCallback((requestBody) => {
-    if(socket && isConnected){
-      const message = {
-        memberId : requestBody.memberId,
-        gameRoomId : requestBody.gameRoomId,
-        type : requestBody.type,
-        xCoordinate : requestBody.xCoordinate,
-        yCoordinate : requestBody.yCoordinate
-      };
-      console.log("Coordinate message ", message);
-      socket.send(JSON.stringify(message));
+ 
+  const sendDrawingData = useCallback((data) => {
+    if (socket && isConnected) {
+      socket.send(JSON.stringify(data));
     }
-  })
+  }, [socket, isConnected]);
 
-
-  return { isConnected, messages, sendMessage };
+  return { isConnected, messages, drawingData, sendMessage, sendDrawingData};
 };
 
 export default useWebSocket;
