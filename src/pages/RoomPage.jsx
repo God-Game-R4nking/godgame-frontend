@@ -50,6 +50,7 @@ const RoomPage = () => {
     const [joinMember, setJoinMember] = useState([]);
     const [refreshTrigger, setRefreshTrigger] = useState(0);
 
+
     const handleGetJoinMember = useCallback(async () => {
         const requestParam = { memberIds: memberIds };
         const response = await getMemberListRequest(requestParam);

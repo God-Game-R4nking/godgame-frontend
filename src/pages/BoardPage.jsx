@@ -9,7 +9,6 @@ const Tr = styled.tr`
     cursor: pointer;
 `;
 
-
 const BoardPage = () => {
     const [response, setResponse] = useState([]);
     const [pageInfo, setPageInfo] = useState({});

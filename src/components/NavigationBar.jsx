@@ -1,9 +1,11 @@
-import React from "react";
+import React, { useState } from "react";
 import styled from "styled-components";
 import { Link } from "react-router-dom";
 import { Home, Room, Reload, Plus, Notification, Setting, Board, Community, Rank, Question, Banner, TitleBar } from "./NavigationElements";
 import { Title } from "./Texts";
 import AddRoomModal from "./AddRoomModal";
+import { removeLocalStorage } from "../utils/LocalStorageManager";
+import sendLogoutRequest from "../services/LogoutRequest";
 
 const Nav = styled.nav`
     display: flex;
@@ -23,13 +25,25 @@ const Div = styled.div`
 
 const NavigationBar = (props) => {
     const { mode, username, AddRoom, category, handleLeave } = props;
-    
+    const [banner, setBanner] = useState(false);
+
+    const handleLogout = async () => {
+        const response = await sendLogoutRequest();
+        if (response.status === 200) {
+            removeLocalStorage('member');
+            removeLocalStorage('token');
+            window.location.reload();
+        }
+    };
+
     if (mode === 'lobby') {
         return (
             <Nav>
                 <NavBar>
                     <Link to="/home"><Home /></Link>
-                    <Reload />
+                    <Reload
+                        onClick={() => window.location.reload()}
+                    />
                     <AddRoomModal ButtonStyle={Plus} AddRoom={AddRoom} />
                 </NavBar>
                 <Div>
@@ -41,8 +55,9 @@ const NavigationBar = (props) => {
         return (
             <Nav>
                 <NavBar>
-                    <Link to="/home"><Home onClick={handleLeave}/></Link>
-                    <Reload />
+                    <Link to="/home"><Home onClick={handleLeave} /></Link>
+                    <Reload
+                        onClick={() => window.location.reload()} />
                     <Setting />
                 </NavBar>
                 <Div>
@@ -60,9 +75,15 @@ const NavigationBar = (props) => {
                     <Link to="/board"><Board /></Link>
                     <Link to="/community"><Community /></Link>
                     <Link to="/rank"><Rank /></Link>
-                    <Link to="/question"><Question /></Link>
-                    <Reload />
-                    <Banner>{username} 님 환영합니다</Banner>
+                    <a href="https://github.com/God-Game-R4nking" target="_blank"><Question /></a>
+                    <Reload
+                        onClick={() => window.location.reload()} />
+                    <Banner
+                        onMouseOver={() => setBanner(true)}
+                        onMouseLeave={() => setBanner(false)}
+                        onClick={handleLogout}
+                    >
+                        {banner ? "로그아웃하기" : `${username} 님 환영합니다`}</Banner>
                 </NavBar>
                 <Div>
                     <TitleBar>&nbsp;{category}</TitleBar>

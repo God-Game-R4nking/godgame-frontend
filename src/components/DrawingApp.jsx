@@ -36,6 +36,8 @@ const Container = styled.div`
 const Canvas = styled.canvas`
   border: 1px solid #000;
   cursor: ${(props) => props.cursor};
+  position: relative;
+  z-index: 2;
 `;
 
 const Tools = styled.div`
