@@ -50,6 +50,9 @@ const useWebSocket = () => {
         const parseMessage = JSON.parse(message);
         if (parseMessage.type === "DRAWING_DATA" || parseMessage.type === "FULL_CANVAS") {
           setDrawingData((prevData) => [...prevData, message]);
+        } else if(parseMessage.type === "reset"){
+          setDrawingData([]);
+          setMessages((prevMessages) => [...prevMessages, message]);
         } else {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
