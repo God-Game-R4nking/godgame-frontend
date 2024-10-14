@@ -12,7 +12,7 @@ import getGameRoomRequest from "../services/GetGameRoom";
 import { getLocalStorage } from "../utils/LocalStorageManager";
 import sendGameRoomLeaveRequest from "../services/PostGameRoomLeave";
 import DrawingPage from "./DrawingPage";
-
+import sendGameStartRequest from "../services/PostStartGame";
 
 const InfoBar = styled.div`
     background-color: #BBBBBB;
@@ -138,6 +138,8 @@ const RoomPage = () => {
     }, [messages]);
 
     const handleGameStart = () => {
+        startGame();
+
         sendMessage({
             type: "START_GAME",
             gameRoomId: gameRoomId,
@@ -171,6 +173,7 @@ const RoomPage = () => {
     };
 
     const startGame= async() =>{
+        const response = await sendGameStartRequest();
 
     }
 
