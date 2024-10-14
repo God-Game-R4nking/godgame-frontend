@@ -154,7 +154,7 @@ const LobbyPage = () => {
     }, []);
 
     const handleAddRoom = async (title) => {
-        const requestBody = { gameRoomName: title, memberId: jsonMember.data.memberId, gameName: "Catchmind", maxPopulation: 8, count : 5};
+        const requestBody = { gameRoomName: title, memberId: jsonMember.data.memberId, gameName: "Catchmind", maxPopulation: 8, count: 5};
         const response = await createGame(requestBody);
 
         if (response) {

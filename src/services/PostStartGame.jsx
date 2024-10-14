@@ -11,7 +11,7 @@ const sendGameStartRequest = async (gameRoomId) => {
     }
 
     try {
-        const response = await axios.post(`http://localhost:8080/${gameRoomId}`, null, {
+        const response = await axios.post(`http://localhost:8080/game-rooms/${gameRoomId}/start`, null, {
             headers: {
                 'Content-Type': 'application/json',
                 'Authorization': token,

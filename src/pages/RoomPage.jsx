@@ -173,7 +173,7 @@ const RoomPage = () => {
     };
 
     const startGame= async() =>{
-        const response = await sendGameStartRequest();
+        const response = await sendGameStartRequest(gameRoomId);
 
     }
 
