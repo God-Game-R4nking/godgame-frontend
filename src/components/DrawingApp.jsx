@@ -112,6 +112,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   }, [drawingData]);
 
   useEffect(() => {
+    console.log("messages", JSON.parse(resetMessage[resetMessage.length -1]))
     if(resetMessage.length > 0){
       const lastMessage = resetMessage[resetMessage.length -1];
       const parseLastMessage = JSON.parse(lastMessage);
@@ -194,7 +195,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
     const dy = y - lastPoint.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance > 15) {
+    if (distance > 15 && distance < 100) {
       ctx.lineTo(x, y);
       ctx.stroke();
 
