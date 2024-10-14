@@ -99,7 +99,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   }, []);
 
   useEffect(() => {
-    console.log("asdasdasd", resetMessage);
+    console.log("asdasdasd",drawingData);
     if (drawingData.length > 0) {
       const lastData = drawingData[drawingData.length - 1];
       const parseLastData = JSON.parse(lastData);
