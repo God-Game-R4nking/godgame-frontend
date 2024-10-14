@@ -133,12 +133,11 @@ const RoomPage = () => {
     const drawMessages = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
-            return parsedMsg.type === "CATCH_MIND_CHAT" || parsedMsg.type === "reset";
+            return parsedMsg.type === "CATCH_MIND_CHAT" || parsedMsg.type === "reset" || parsedMsg.type === "CURRENT_DRAWER" || parsedMsg.type === "CURRENT_ANSWER" || parsedMsg.type === "CORRECT_ANSWER";
         });
     }, [messages]);
 
     const handleGameStart = () => {
-        startGame();
 
         sendMessage({
             type: "START_GAME",
@@ -168,6 +167,7 @@ const RoomPage = () => {
             });
             // 게임 시작 상태 업데이트
             setGameStart(true);
+            startGame();
         }, 5000); // 5초 후 게임 시작 메시지 전송
 
     };
