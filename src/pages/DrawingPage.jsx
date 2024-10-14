@@ -253,26 +253,32 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
         }
     }, [messages]);
 
-    useEffect(() => {
-        if(currentDrawers.length > 0 && currentAnswers.length > 0){
-            const newDrawer = JSON.parse(currentDrawers[currentDrawers.length-1]).content;
-            const newAnswer = JSON.parse(currentAnswers[currentAnswers.length-1]).content;
-            setCurrentDrawer(newDrawer);
-            setCurrentAnswer(newAnswer);
-            
-            // 새로운 라운드가 시작될 때 그리는 사람의 메시지를 정답으로 설정 (본인에게만 보임)
-            if (member.data.nickName === newDrawer) {
-                const answerMessage = { content: `현재 정답: ${newAnswer}`, timestamp: Date.now(), isAnswer: true };
-                setDrawerAnswerMessage(answerMessage);
-                setMemberMessages((prevMessages) => ({
-                    ...prevMessages,
-                    [newDrawer]: answerMessage
-                }));
-            } else {
-                setDrawerAnswerMessage(null);
-            }
+    // 상태 업데이트 후 렌더링을 기다리도록 useEffect 사용
+useEffect(() => {
+    if (currentDrawers.length > 0 && currentAnswers.length > 0) {
+        const newDrawer = JSON.parse(currentDrawers[currentDrawers.length - 1]).content;
+        const newAnswer = JSON.parse(currentAnswers[currentAnswers.length - 1]).content;
+        
+        setCurrentDrawer(newDrawer);
+        setCurrentAnswer(newAnswer);
+    }
+}, [currentDrawers, currentAnswers]);
+
+useEffect(() => {
+    if (currentDrawer && currentAnswer) {
+        // 새로운 라운드가 시작될 때 그리는 사람의 메시지를 정답으로 설정 (본인에게만 보임)
+        if (member.data.nickName === currentDrawer) {
+            const answerMessage = { content: `현재 정답: ${currentAnswer}`, timestamp: Date.now(), isAnswer: true };
+            setDrawerAnswerMessage(answerMessage);
+            setMemberMessages((prevMessages) => ({
+                ...prevMessages,
+                [currentDrawer]: answerMessage
+            }));
+        } else {
+            setDrawerAnswerMessage(null);
         }
-    }, [currentDrawers, currentAnswers]);
+    }
+}, [currentDrawer, currentAnswer, member.data.nickName]);
 
     const renderMessage = (nickname) => {
         if (nickname === currentDrawer && member.data.nickName === currentDrawer && drawerAnswerMessage) {

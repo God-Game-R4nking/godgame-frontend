@@ -166,10 +166,9 @@ const RoomPage = () => {
                 content: "게임이 시작되었습니다!"
             });
             // 게임 시작 상태 업데이트
-            setGameStart(true);
             startGame();
+            setGameStart(true);
         }, 5000); // 5초 후 게임 시작 메시지 전송
-
     };
 
     const startGame= async() =>{

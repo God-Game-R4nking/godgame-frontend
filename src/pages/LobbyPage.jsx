@@ -145,7 +145,7 @@ const LobbyPage = () => {
     const getGameRooms = async () => {
         const response = await getGameRoomsRequest();
         if(response){
-        setGameRoomResponse(response.data);
+            setGameRoomResponse(response.data);
         }
     };
 
