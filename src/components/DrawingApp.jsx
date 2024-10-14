@@ -112,10 +112,10 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   }, [drawingData]);
 
   useEffect(() => {
-    console.log("messages", JSON.parse(resetMessage[resetMessage.length -1]))
     if(resetMessage.length > 0){
       const lastMessage = resetMessage[resetMessage.length -1];
       const parseLastMessage = JSON.parse(lastMessage);
+      console.log("messages", parseLastMessage);
       if(parseLastMessage.type === "reset"){
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
       }
