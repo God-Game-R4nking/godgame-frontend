@@ -79,7 +79,7 @@ const ResetButton = styled.button`
   }
 `;
 
-const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage, drawingData, sendMessage, sendDrawingData }) => {
+const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage, drawingData, sendMessage, sendDrawingData, currentDrawer }) => {
   const canvasRef = useRef(null);
   const [isDrawing, setIsDrawing] = useState(false);
   const [ctx, setCtx] = useState(null);
@@ -91,6 +91,8 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   const [isPaint, setIsPaint] = useState(false);
   const [lastPoint, setLastPoint] = useState(null);
   const [drawingCommands, setDrawingCommands] = useState([]);
+
+  const isCurrentDrawer = nickName === currentDrawer;
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -112,7 +114,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   }, [drawingData]);
 
   useEffect(() => {
-    if(resetMessage.length > 0){
+    if(resetMessage.length > 0 && !isCurrentDrawer){
       const lastMessage = resetMessage[resetMessage.length -1];
       const parseLastMessage = JSON.parse(lastMessage);
       console.log("messages", parseLastMessage);
@@ -146,6 +148,9 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
         case 'setLineWidth':
           ctx.lineWidth = cmd.width;
           break;
+        case 'setGlobalCompositeOperation':
+          ctx.globalCompositeOperation = cmd.operation;
+          break;
       }
     });
   };
@@ -158,6 +163,8 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
     img.src = imageData;
   };
   const startDrawing = (event) => {
+    if(!isCurrentDrawer) return;
+
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor(event.clientX - rect.left);
@@ -184,7 +191,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   };
 
   const draw = (event) => {
-    if (!isDrawing) return;
+    if (!isDrawing || !isCurrentDrawer) return;
 
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
@@ -205,7 +212,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   };
 
   const endDrawing = () => {
-    if (!isDrawing) return;
+    if (!isDrawing || !isCurrentDrawer) return;
 
     setIsDrawing(false);
     ctx.closePath();
@@ -308,6 +315,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   };
 
   const handleClick = (event) => {
+    if (!isCurrentDrawer) return;
     const canvas = canvasRef.current;
     const rect = canvas.getBoundingClientRect();
     const x = Math.floor(event.clientX - rect.left);
@@ -351,15 +359,16 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   return (
     <Container>
       <Tools>
-        <ResetButton onClick={resetCanvas}>리셋</ResetButton>
-        <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}>펜</ToolButton>
-        <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}>브러쉬</ToolButton>
-        <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}>페인트 도구</ToolButton>
-        <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}>지우개</ToolButton>
+        <ResetButton onClick={resetCanvas}  disabled={!isCurrentDrawer}>리셋</ResetButton>
+        <ToolButton active={activeTool === 'pen'} onClick={() => handleToolChange('pen')}  disabled={!isCurrentDrawer}>펜</ToolButton>
+        <ToolButton active={activeTool === 'brush'} onClick={() => handleToolChange('brush')}  disabled={!isCurrentDrawer}>브러쉬</ToolButton>
+        <ToolButton active={activeTool === 'paint'} onClick={() => handleToolChange('paint')}  disabled={!isCurrentDrawer}>페인트 도구</ToolButton>
+        <ToolButton active={activeTool === 'eraser'} onClick={() => handleToolChange('eraser')}  disabled={!isCurrentDrawer}>지우개</ToolButton>
         <ColorPicker
           type="color"
           value={color}
           onChange={(e) => setColor(e.target.value)}
+          disabled={!isCurrentDrawer}
         />
         <LineWidthSelector
           type="range"
@@ -367,6 +376,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
           max="50"
           value={lineWidth}
           onChange={(e) => setLineWidth(e.target.value)}
+          disabled={!isCurrentDrawer}
         />
         {lineWidth}
       </Tools>

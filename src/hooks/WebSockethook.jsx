@@ -48,6 +48,7 @@ const useWebSocket = () => {
       ws.onmessage = (event) => {
         const message = JSON.parse(event.data);
         const parseMessage = JSON.parse(message);
+        console.log("afsdasdafasdfa", parseMessage);
         if (parseMessage.type === "DRAWING_DATA" || parseMessage.type === "FULL_CANVAS") {
           setDrawingData((prevData) => [...prevData, message]);
         } else if(parseMessage.type === "reset"){
@@ -57,6 +58,7 @@ const useWebSocket = () => {
           setMessages((prevMessages) => [...prevMessages, message]);
         }
       };
+
 
       ws.onclose = () => {
         console.log('WebSocket Disconnected');

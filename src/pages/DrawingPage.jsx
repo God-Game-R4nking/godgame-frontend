@@ -144,18 +144,41 @@ const LeftChat = styled(Chat)`
   }
 `;
 
+const AnswerChat = styled(Chat)`
+  background-color: #4CAF50;  // 정답 채팅을 위한 다른 배경색
+  font-weight: bold;
+`;
+
 const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, messages, drawingData, sendMessage, sendDrawingData }) => {
     const inputRef = useRef();
     const [leftMembers, setLeftMembers] = useState([]);
     const [rightMembers, setRightMembers] = useState([]);
     const member = JSON.parse(JSON.parse(getLocalStorage('member')));
     const [memberMessages, setMemberMessages] = useState({});
+    const [currentDrawer, setCurrentDrawer] = useState('');
+    const [currentAnswer, setCurrentAnswer] = useState('');
+    const [correctAnswerer, setCorrectAnswerer] = useState('');
+    const [drawerAnswerMessage, setDrawerAnswerMessage] = useState(null);
 
 
     const resetMessage = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
             return parsedMsg.type === "reset";
+        });
+    }, [messages]);
+
+    const currentDrawers = useMemo(() => {
+        return messages.filter(msg => {
+            const parsedMsg = JSON.parse(msg);
+            return parsedMsg.type === "CURRENT_DRAWER";
+        });
+    }, [messages]);
+
+    const currentAnswers = useMemo(() => {
+        return messages.filter(msg => {
+            const parsedMsg = JSON.parse(msg);
+            return parsedMsg.type === "CURRENT_ANSWER";
         });
     }, [messages]);
 
@@ -168,7 +191,7 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
 
     const handleSend = () => {
         const inputMessage = inputRef.current.value;
-        if (inputMessage.trim()) {
+        if (inputMessage.trim() && member.data.nickName !== currentDrawer) {
             sendMessage({
                 type: "CATCH_MIND_CHAT",
                 gameRoomId: gameRoomId,
@@ -177,6 +200,18 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
                 content: inputMessage
             });
             inputRef.current.value = "";
+            
+            // 정답 체크
+            if (inputMessage.trim().toLowerCase() === currentAnswer.toLowerCase()) {
+                setCorrectAnswerer(member.data.nickName);
+                sendMessage({
+                    type: "CORRECT_ANSWER",
+                    gameRoomId: gameRoomId,
+                    nickName: member.data.nickName,
+                    memberId: member.data.memberId,
+                    content: inputMessage
+                });
+            }
         }
     };
 
@@ -198,28 +233,59 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
     useEffect(() => {
         if (messages.length > 0) {
             const latestMessage = JSON.parse(messages[messages.length - 1]);
-            const { nickName, content } = latestMessage;
+            if (latestMessage.type === "CATCH_MIND_CHAT") {
+                const { nickName, content } = latestMessage;
 
-            setMemberMessages((prevMessages) => ({
-                ...prevMessages,
-                [nickName]: { content, timestamp: Date.now() }
-            }));
+                setMemberMessages((prevMessages) => ({
+                    ...prevMessages,
+                    [nickName]: { content, timestamp: Date.now() }
+                }));
 
-            // 5초 후 메시지 제거
-            setTimeout(() => {
-                setMemberMessages((prevMessages) => {
-                    const newMessages = { ...prevMessages };
-                    delete newMessages[nickName];
-                    return newMessages;
-                });
-            }, 5000);
+                // 5초 후 메시지 제거
+                setTimeout(() => {
+                    setMemberMessages((prevMessages) => {
+                        const newMessages = { ...prevMessages };
+                        delete newMessages[nickName];
+                        return newMessages;
+                    });
+                }, 5000);
+            }
         }
     }, [messages]);
 
+    useEffect(() => {
+        if(currentDrawers.length > 0 && currentAnswers.length > 0){
+            const newDrawer = JSON.parse(currentDrawers[currentDrawers.length-1]).content;
+            const newAnswer = JSON.parse(currentAnswers[currentAnswers.length-1]).content;
+            setCurrentDrawer(newDrawer);
+            setCurrentAnswer(newAnswer);
+            
+            // 새로운 라운드가 시작될 때 그리는 사람의 메시지를 정답으로 설정 (본인에게만 보임)
+            if (member.data.nickName === newDrawer) {
+                const answerMessage = { content: `현재 정답: ${newAnswer}`, timestamp: Date.now(), isAnswer: true };
+                setDrawerAnswerMessage(answerMessage);
+                setMemberMessages((prevMessages) => ({
+                    ...prevMessages,
+                    [newDrawer]: answerMessage
+                }));
+            } else {
+                setDrawerAnswerMessage(null);
+            }
+        }
+    }, [currentDrawers, currentAnswers]);
+
     const renderMessage = (nickname) => {
+        if (nickname === currentDrawer && member.data.nickName === currentDrawer && drawerAnswerMessage) {
+            return <AnswerChat>{drawerAnswerMessage.content}</AnswerChat>;
+        }
+
         const message = memberMessages[nickname];
         if (message && Date.now() - message.timestamp < 5000) {
-            return message.content;
+            if (message.isAnswer && member.data.nickName === currentDrawer) {
+                return <AnswerChat>{message.content}</AnswerChat>;
+            } else if (!message.isAnswer) {
+                return message.content;
+            }
         }
         return null;
     };
@@ -228,9 +294,13 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
         <HomeUI gamemode={true}>
             <Container>
                 <UserContainerL>
-                    {leftMembers.map((member, index) => (
+                {leftMembers.map((member, index) => (
                         <UserContainer key={index}>
-                            <UserProfileInRoom nickname={member.nickName} display={""} />
+                            <UserProfileInRoom 
+                                nickname={member.nickName} 
+                                display={member.nickName === currentDrawer ? "drawer" : 
+                                         member.nickName === correctAnswerer ? "correct" : ""}
+                            />
                             <ChatContainer>
                                 {renderMessage(member.nickName) && (
                                     <LeftChat>{renderMessage(member.nickName)}</LeftChat>
@@ -240,34 +310,42 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
                     ))}
                 </UserContainerL>
                 <DrawingAppContainer>
-                    <DrawingApp gameRoomId={gameRoomId}
+                    <DrawingApp 
+                        gameRoomId={gameRoomId}
                         memberId={memberId}
                         nickName={nickName}
                         isConnected={isConnected}
                         resetMessage={messages}
                         drawingData={drawingData}
                         sendMessage={sendMessage}
-                        sendDrawingData={sendDrawingData} />
-                    <InputContainer>
+                        sendDrawingData={sendDrawingData} 
+                        currentDrawer={currentDrawer}
+                    />
+                     <InputContainer>
                         <Input
                             ref={inputRef}
                             onKeyDown={handleKeyDown}
-                            placeholder="메시지를 입력하세요."
+                            placeholder={member.data.nickName === currentDrawer ? "그리는 중에는 채팅할 수 없습니다." : "메시지를 입력하세요."}
+                            disabled={member.data.nickName === currentDrawer}
                         />
                         <ButtonContainer>
-                            <Button onClick={handleSend}>SEND</Button>
+                            <Button onClick={handleSend} style={{opacity: member.data.nickName === currentDrawer ? 0.5 : 1}}>SEND</Button>
                         </ButtonContainer>
                     </InputContainer>
                 </DrawingAppContainer>
                 <UserContainerR>
-                    {rightMembers.map((member, index) => (
+                {rightMembers.map((member, index) => (
                         <UserContainer key={index}>
                             <ChatContainer>
                                 {renderMessage(member.nickName) && (
                                     <RightChat>{renderMessage(member.nickName)}</RightChat>
                                 )}
                             </ChatContainer>
-                            <UserProfileInRoom nickname={member.nickName} display={""} />
+                            <UserProfileInRoom 
+                                nickname={member.nickName} 
+                                display={member.nickName === currentDrawer ? "drawer" : 
+                                         member.nickName === correctAnswerer ? "correct" : ""}
+                            />
                         </UserContainer>
                     ))}
                 </UserContainerR>
