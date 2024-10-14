@@ -99,7 +99,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
   }, []);
 
   useEffect(() => {
-    console.log("asdasdasd",drawingData);
+    console.log("asdasdasd", resetMessage);
     if (drawingData.length > 0) {
       const lastData = drawingData[drawingData.length - 1];
       const parseLastData = JSON.parse(lastData);
@@ -115,8 +115,9 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
     if(resetMessage.length > 0){
       const lastMessage = resetMessage[resetMessage.length -1];
       const parseLastMessage = JSON.parse(lastMessage);
-      if(parseLastMessage.type === "reset"){}
+      if(parseLastMessage.type === "reset"){
       ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
+      }
     }
   }, [resetMessage]);
 
@@ -193,7 +194,7 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
     const dy = y - lastPoint.y;
     const distance = Math.sqrt(dx * dx + dy * dy);
 
-    if (distance > 5) {
+    if (distance > 15) {
       ctx.lineTo(x, y);
       ctx.stroke();
 
@@ -218,20 +219,21 @@ const DrawingApp = ({ gameRoomId, memberId, nickName, isConnected, resetMessage,
     setDrawingCommands([]);
   };
 
-  // useEffect(() => {
-  //   const interval = setInterval(() => {
-  //     const canvas = canvasRef.current;
-  //     const imageData = canvas.toDataURL();
-  //     sendDrawingData({
-  //       memberId,
-  //       gameRoomId,
-  //       type: 'FULL_CANVAS',
-  //       imageData
-  //     });
-  //   }, 10000);
-
-  //   return () => clearInterval(interval);
-  // }, [gameRoomId, memberId, sendDrawingData]);
+  useEffect(() => {
+    const interval = setInterval(() => {
+      if (drawingCommands.length > 0) {
+        sendDrawingData({
+          memberId,
+          gameRoomId,
+          type: 'DRAWING_DATA',
+          commands: [...drawingCommands, { type: 'closePath' }]
+        });
+        setDrawingCommands([]); // 전송 후 초기화
+      }
+    }, 5000); // 100ms마다 데이터를 배치로 전송
+  
+    return () => clearInterval(interval);
+  }, [drawingCommands, memberId, gameRoomId, sendDrawingData]);
 
   const resetCanvas = () => {
     ctx.clearRect(0, 0, canvasRef.current.width, canvasRef.current.height);
