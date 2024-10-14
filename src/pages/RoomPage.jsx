@@ -167,9 +167,12 @@ const RoomPage = () => {
             // 게임 시작 상태 업데이트
             setGameStart(true);
         }, 5000); // 5초 후 게임 시작 메시지 전송
+
     };
 
+    const startGame= async() =>{
 
+    }
 
     const leaveGame = async () => {
         const isConfirmed = window.confirm("정말로 게임을 나가시겠습니까?");
