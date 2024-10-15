@@ -168,14 +168,14 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
         });
     }, [messages]);
 
-    const currentDrawers = useMemo(() => {
+    let currentDrawers = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
             return parsedMsg.type === "CURRENT_DRAWER";
         });
     }, [messages]);
 
-    const currentAnswers = useMemo(() => {
+    let currentAnswers = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
             return parsedMsg.type === "CURRENT_ANSWER";
