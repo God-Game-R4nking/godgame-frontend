@@ -54,14 +54,15 @@ const RoomPage = () => {
     const handleGetJoinMember = useCallback(async () => {
         const requestParam = { memberIds: memberIds };
         const response = await getMemberListRequest(requestParam);
-        setJoinMember(response.data);
-
+    
         console.log("Response", response.data);
 
         if (response && Array.isArray(response.data)) {
             setGameMembers(response.data);
+            setJoinMember(response.data);
         } else if (response && Array.isArray(response)) {
             setGameMembers(response);
+            setJoinMember(response);
         } else {
             console.error("Unexpected response format:", response);
             alert("멤버 정보를 불러오는 데 실패했습니다.");
@@ -126,7 +127,7 @@ const RoomPage = () => {
     const chatMessages = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
-            return parsedMsg.type === "CHAT" || parsedMsg.type === "START_GAME" || parsedMsg.type === "COUNTDOWN" || parsedMsg.type === "GAME_STARTED" || parsedMsg.type === "JOIN_GAME" || parsedMsg.type === "LEAVE_GAME";
+            return parsedMsg.type === "CHAT" || parsedMsg.type === "START_CATCHMIND" || parsedMsg.type === "COUNTDOWN" || parsedMsg.type === "GAME_STARTED" || parsedMsg.type === "JOIN_GAME" || parsedMsg.type === "LEAVE_GAME";
         });
     }, [messages]);
 
@@ -140,11 +141,11 @@ const RoomPage = () => {
     const handleGameStart = () => {
 
         sendMessage({
-            type: "START_GAME",
+            type: "START_CATCHMIND",
             gameRoomId: gameRoomId,
             nickName: member.data.nickName,
             memberId: member.data.memberId,
-            content: "게임 시작"
+            content: "5"
         });
 
         // 카운트다운 시작
@@ -157,7 +158,7 @@ const RoomPage = () => {
                 });
             }, (5 - i) * 1000); // 1초 간격으로 메시지를 보냄
         }
-
+      
         // 카운트다운이 끝난 후 게임 시작 메시지 전송
         setTimeout(() => {
             sendMessage({
@@ -166,14 +167,49 @@ const RoomPage = () => {
                 content: "게임이 시작되었습니다!"
             });
             // 게임 시작 상태 업데이트
-            startGame();
+            startRound();
             setGameStart(true);
         }, 5000); // 5초 후 게임 시작 메시지 전송
     };
 
-    const startGame= async() =>{
-        const response = await sendGameStartRequest(gameRoomId);
+    const startRound = () =>{
+        sendMessage({
+            type: "START_ROUND",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "5"
+        });
+    }
 
+    const startTimer = () =>{
+        sendMessage({
+            type: "START_TIMER",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "타이머 시작"
+        });
+    }
+
+    const stopTimer = () => {
+        sendMessage({
+            type: "STOP_TIMER",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "타이머 스탑"
+        });
+    }
+
+    const endRound = () => {
+        sendMessage({
+            type: "END_ROUND",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "라운드 끝"
+        });
     }
 
     const leaveGame = async () => {
