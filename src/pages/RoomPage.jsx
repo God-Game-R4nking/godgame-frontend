@@ -127,14 +127,15 @@ const RoomPage = () => {
     const chatMessages = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
-            return parsedMsg.type === "CHAT" || parsedMsg.type === "START_CATCHMIND" || parsedMsg.type === "COUNTDOWN" || parsedMsg.type === "GAME_STARTED" || parsedMsg.type === "JOIN_GAME" || parsedMsg.type === "LEAVE_GAME";
+            return parsedMsg.type === "CHAT" || parsedMsg.type === "COUNTDOWN" || parsedMsg.type === "GAME_STARTED" || parsedMsg.type === "JOIN_GAME" || parsedMsg.type === "LEAVE_GAME";
         });
     }, [messages]);
 
     const drawMessages = useMemo(() => {
         return messages.filter(msg => {
             const parsedMsg = JSON.parse(msg);
-            return parsedMsg.type === "CATCH_MIND_CHAT" || parsedMsg.type === "reset" || parsedMsg.type === "CURRENT_DRAWER" || parsedMsg.type === "CURRENT_ANSWER" || parsedMsg.type === "CORRECT_ANSWER";
+            return parsedMsg.type === "CATCH_MIND_CHAT" || parsedMsg.type === "reset" || parsedMsg.type === "CURRENT_DRAWER" || parsedMsg.type === "CURRENT_ANSWER" 
+            || parsedMsg.type === "CORRECT_ANSWER" || parsedMsg.type === "START_ROUND" || parsedMsg.type === "END_ROUND" || parsedMsg.type === "END_GAME";
         });
     }, [messages]);
 
@@ -143,7 +144,7 @@ const RoomPage = () => {
         sendMessage({
             type: "START_CATCHMIND",
             gameRoomId: gameRoomId,
-            nickName: member.data.nickName,
+            nickName: "관리자",
             memberId: member.data.memberId,
             content: "5"
         });
@@ -178,7 +179,7 @@ const RoomPage = () => {
             gameRoomId: gameRoomId,
             nickName: member.data.nickName,
             memberId: member.data.memberId,
-            content: "5"
+            content: "라운드 시작"
         });
     }
 
@@ -209,6 +210,16 @@ const RoomPage = () => {
             nickName: member.data.nickName,
             memberId: member.data.memberId,
             content: "라운드 끝"
+        });
+    }
+
+    const endGame = () => {
+        sendMessage({
+            type: "END_GAME",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "게임 끝"
         });
     }
 

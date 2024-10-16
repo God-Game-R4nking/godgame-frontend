@@ -189,6 +189,39 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
         }
     };
 
+    const startNewRound = () => {
+        sendMessage({
+            type: "START_ROUND",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "새 라운드 시작"
+        });
+    }
+
+     const endRound = () => {
+        sendMessage({
+            type: "END_ROUND",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "라운드 끝"
+        });
+        
+        // Start a new round after a short delay
+        setTimeout(startNewRound, 3000); // 3 second delay before starting a new round
+    }
+
+    const endGame = () => {
+        sendMessage({
+            type: "END_GAME",
+            gameRoomId: gameRoomId,
+            nickName: member.data.nickName,
+            memberId: member.data.memberId,
+            content: "게임 끝"
+        });
+    }
+
     const handleSend = () => {
         const inputMessage = inputRef.current.value;
         if (inputMessage.trim() && member.data.nickName !== currentDrawer) {
@@ -211,6 +244,7 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
                     memberId: member.data.memberId,
                     content: inputMessage
                 });
+                endRound();
             }
         }
     };
