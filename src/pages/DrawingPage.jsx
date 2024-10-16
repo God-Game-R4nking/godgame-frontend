@@ -4,6 +4,7 @@ import HomeUI from "../components/HomeUI";
 import UserProfileInRoom from "../components/UserProfileInRoom";
 import styled from "styled-components";
 import { getLocalStorage } from "../utils/LocalStorageManager";
+import AnswerModal from "../components/AnwerModal";
 
 const Container = styled.div`
     display: flex;
@@ -159,6 +160,7 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
     const [currentAnswer, setCurrentAnswer] = useState('');
     const [correctAnswerer, setCorrectAnswerer] = useState('');
     const [drawerAnswerMessage, setDrawerAnswerMessage] = useState(null);
+    const [isModalOpen, setIsModalOpen] = useState(false);
 
 
     const resetMessage = useMemo(() => {
@@ -237,6 +239,7 @@ const DrawingPage = ({ joinMember, gameRoomId, memberId, nickName, isConnected, 
             // 정답 체크
             if (inputMessage.trim().toLowerCase() === currentAnswer.toLowerCase()) {
                 setCorrectAnswerer(member.data.nickName);
+                setIsModalOpen(true); // 모달 열기
                 sendMessage({
                     type: "CORRECT_ANSWER",
                     gameRoomId: gameRoomId,
@@ -390,6 +393,10 @@ useEffect(() => {
                     ))}
                 </UserContainerR>
             </Container>
+            <AnswerModal isOpen={isModalOpen} onClose={() => setIsModalOpen(false)}>
+                <h2>정답입니다!</h2>
+                <p>{correctAnswerer}님이 정답을 맞추셨습니다.</p>
+            </AnswerModal>
         </HomeUI>
     );
 };
